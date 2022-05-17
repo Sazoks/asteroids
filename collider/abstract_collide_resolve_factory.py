@@ -3,8 +3,8 @@ from abc import (
     abstractmethod,
 )
 
+from .collideable import Collideable
 from .resolves import AbstractCollideResolve
-from my_annotation.collideable import Collideable
 
 
 class AbstractCollideResolveFactory(ABC):

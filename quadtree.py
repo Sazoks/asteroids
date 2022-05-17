@@ -9,7 +9,7 @@ from my_dataclasses import (
     Point,
     Area,
 )
-from my_annotation.collideable import Collideable
+from collider.collideable import Collideable
 
 
 class Quadtree:

@@ -1,4 +1,4 @@
-from my_annotation.collideable import Collideable
+from .collideable import Collideable
 from .abstract_collide_resolve_factory import AbstractCollideResolveFactory
 
 
