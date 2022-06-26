@@ -6,14 +6,20 @@ from typing import (
     Optional,
 )
 
-from asteroid import (
+from asteroids.asteroid import (
     Asteroid,
     AsteroidType,
 )
+from levels.abstract_managing_levels import ManagingLevels
 
 
-class AsteroidLevelManager:
-    """Класс для управления астероидами"""
+class AsteroidsGenerator(ManagingLevels):
+    """
+    Класс для управления астероидами.
+
+    Наследует абстрактный класс (интерфейс) ManagingLevels для изменения
+    уровня генерации астероидов.
+    """
 
     def __init__(self,
                  start_frequency: float,
@@ -23,12 +29,8 @@ class AsteroidLevelManager:
         """
         Инициализатор класса.
 
-        :param start_frequency: Начальное значение частоты появления астероидов.
-        :param end_frequency: Конечное значение частоты появления астероидов.
+        :param start_frequency: Начальная частота появления астероидов.
         :param frequency_delta: Изменения частоты появления с каждым уровнем.
-        :param start_probability: Начальное значение коэфф. распределения Пуассона.
-        :param end_probability: Конечное значение коэфф распределения Пуассона.
-        :param probability_delta: Коэффициент изменения встречаемости астероидов.
         :param asteroid_types: Типы астероидов.
         """
 
@@ -54,7 +56,7 @@ class AsteroidLevelManager:
             self.__start_probability,
         )
 
-    def start(self) -> Optional[Asteroid]:
+    def generate(self) -> Optional[Asteroid]:
         """Генерация астероидов"""
 
         now = pygame.time.get_ticks()
@@ -124,7 +126,8 @@ class AsteroidLevelManager:
         # Повышаем счет уровня.
         self.__index_current_level += 1
 
-        # Повышаем скорость появления астероидов.
+        # Повышаем скорость появления астероидов. Это увеличит сложность
+        # игры, что логично с повышением уровня.
         if self.__current_frequency > 0:
             self.__current_frequency -= self.__frequency_delta
 

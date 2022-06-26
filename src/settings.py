@@ -1,25 +1,19 @@
+import sys
 import pygame
-from typing import List
-
-from pathlib import Path
 from enum import Enum
-from quadtree import (
-    Quadtree,
-)
-from my_dataclasses import (
-    Area,
-    Point,
-)
+from typing import List
+from pathlib import Path
 
 
 # Настройки игрового окна.
-WIDTH = 1600
-HEIGHT = 800
-FPS = 100
+WIDTH = 900
+HEIGHT = 900
+FPS = 60
 
 
-# Задаем цвета.
 class Collors(Enum):
+    """Цвета для игры RGB формате"""
+
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -28,7 +22,19 @@ class Collors(Enum):
     YELLOW = (235, 235, 0)
 
 
-# Создаем игру и окно.
+# Пути папок до медиа файлов.
+# Проверка необходима, если программа запускается из
+# скомпилированного .exe-файла.
+if getattr(sys, 'frozen', False):
+    base_dir = Path(sys.executable).parent
+else:
+    base_dir = Path(__file__).parent
+sprites_dir = base_dir / 'media/sprites'
+audio_dir = base_dir / 'media/audio'
+
+
+# Создаем игру, окно, в которое будут отрисовываться все спрайты,
+# инициализируем микшер для звуков, создаем таймер и шрифты.
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -36,23 +42,6 @@ pygame.display.set_caption("Asteroids")
 clock = pygame.time.Clock()
 pygame.font.init()
 my_font = pygame.font.SysFont('Comic Sans MS', 30)
-
-
-# Пути папок до файлов.
-sprites_dir = Path(__file__).parent / 'sprites'
-audio_dir = Path(__file__).parent / 'audio'
-
-
-# Создаем квадродерево.
-# Задаем начальный сектор и разброс поиска (в px).
-quadtree = Quadtree(area=Area(Point(0, 0), Point(WIDTH, HEIGHT)),
-                    search_accuracy=50)
-
-# Создаем группы объектов.
-players_group = pygame.sprite.Group()
-bullets_group = pygame.sprite.Group()
-asteroids_sprites = pygame.sprite.Group()
-explosions_sprites = pygame.sprite.Group()
 
 
 # Загружаем спрайты.
@@ -101,6 +90,6 @@ chunky_expl = pygame.mixer.Sound(audio_dir / f'expls/chunky_expl.mp3')
 chunky_expl.set_volume(0.7)
 
 # Загрузка музыки.
-# pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
-# pygame.mixer.music.set_volume(0.05)
-# pygame.mixer.music.play(-1)
+pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
+pygame.mixer.music.set_volume(0.05)
+pygame.mixer.music.play(-1)

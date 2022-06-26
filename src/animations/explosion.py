@@ -7,10 +7,24 @@ from settings import explosion_anim
 
 
 class Explosion(pygame.sprite.Sprite):
-    """Класс анимации взрыва"""
+    """
+    Класс анимации взрыва.
+
+    На каждой итерации игрового цикла вызывается метод update экземпляра
+    класса анимации взрыва. Благодаря параметру frame_rate меняет изображения
+    спрайта взрыва на нужной нам скорости.
+    """
 
     def __init__(self, center: Tuple[float, float], size: float,
-                 frame_rate: int = 55):
+                 frame_rate: int = 55) -> None:
+        """
+        Инициализатор класса.
+
+        :param center: Координаты центра взрыва.
+        :param size: Размеры взрыва (радиус).
+        :param frame_rate: Кадры в секунду для воспроизведения анимации.
+        """
+
         pygame.sprite.Sprite.__init__(self)
         self.size = size
         self.image = pygame.transform.scale(explosion_anim[0], (size, size))
@@ -20,7 +34,11 @@ class Explosion(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = frame_rate
 
-    def update(self):
+    def update(self) -> None:
+        """Запуск шага анимации"""
+
+        # Обновляем спрайт текущего объекта взрыва на нужно скорости
+        # вопспроизведения анимации.
         now = pygame.time.get_ticks()
         if now - self.last_update > self.frame_rate:
             self.last_update = now

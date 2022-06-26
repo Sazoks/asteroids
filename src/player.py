@@ -3,15 +3,30 @@ import random
 import math
 
 import settings
+from game_objects import GameObjects
 from bullet import Bullet
 
 
 class Player(pygame.sprite.Sprite):
     """Класс игрока"""
 
-    def __init__(self, skin: pygame.Surface, bullet_skin: pygame.Surface,
+    def __init__(self,
+                 skin: pygame.Surface, bullet_skin: pygame.Surface,
                  health: float, speed: float, damage: float,
                  radius: float, shoot_delay: int, score: int) -> None:
+        """
+        Инициализатор класса.
+
+        :param skin: Изображение для спрайта игрока.
+        :param bullet_skin: Изображение для снарядов игрока.
+        :param health: Здоровьев игрока.
+        :param speed: Скорость игрока.
+        :param damage: Урон от снарядов игрока.
+        :param radius: Радиус спрайта игрока.
+        :param shoot_delay: Скорострельность игрока.
+        :param score: Счет игрока.
+        """
+
         pygame.sprite.Sprite.__init__(self)
 
         # Изображение пуль.
@@ -42,18 +57,18 @@ class Player(pygame.sprite.Sprite):
         # Параметры для вращения.
         self.rot = 0
 
-    def update(self):
+    def update(self) -> None:
         """Метод обновления состояния игрока"""
 
-        # Повороты корабля.
+        # Считываем координаты курсора.
         mouse_x, mouse_y = pygame.mouse.get_pos()
         rel_x, rel_y = mouse_x - self.x, mouse_y - self.y
+        # Поворачиваем спрайта игрока в сторону курсора.
         angle = (180 / math.pi) * -math.atan2(rel_y, rel_x) - 90
         self.rotate(angle)
 
-        # Нажатая клавиша.
+        # Обработка нажатых клавиш для управления кораблем.
         key_state = pygame.key.get_pressed()
-        # Управление кораблем.
         if key_state[pygame.K_a]:
             self.x -= self.speed
             self.rect.centerx = self.x
@@ -67,8 +82,8 @@ class Player(pygame.sprite.Sprite):
             self.y += self.speed
             self.rect.centery = self.y
 
+        # Обработка стрельбы игрока.
         mouse_state = pygame.mouse.get_pressed()
-        # Игрок стреляет.
         if mouse_state[0] and self.health > 0:
             self.shoot()
 
@@ -100,6 +115,12 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.rect(screen, settings.Collors.WHITE.value, outline_rect, 2)
 
     def rotate(self, new_rot: float) -> None:
+        """
+        Поврот спрайта игрока.
+
+        :param new_rot: Новое значение в радианах.
+        """
+
         self.rot = new_rot
         new_image = pygame.transform.rotate(self.image_orig, self.rot)
         old_center = self.rect.center
@@ -107,7 +128,10 @@ class Player(pygame.sprite.Sprite):
         self.image.set_colorkey(settings.Collors.BLACK.value)
         self.rect = self.image.get_rect(center=old_center)
 
-    def shoot(self):
+    def shoot(self) -> None:
+        """Стрельба игрока"""
+
+        # Держим правильную скорость стрельбы игрока.
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.shoot_delay:
             self.last_shot = now
@@ -115,5 +139,5 @@ class Player(pygame.sprite.Sprite):
             y = self.rect.centery - self.radius * math.cos(math.radians(self.rot))
             bullet = Bullet(skin=self.bullet_skin, x=x, y=y,
                             angle=math.radians(self.rot), damage=self.damage)
-            settings.bullets_group.add(bullet)
+            GameObjects().bullets_group.add(bullet)
             pygame.mixer.Channel(0).play(settings.shoot_sound)

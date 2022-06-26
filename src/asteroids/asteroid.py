@@ -16,7 +16,9 @@ class Asteroid(pygame.sprite.Sprite):
 
     # Значение, при котором астероид не должен делиться.
     __min_radius = 30
-    __min_max_new_asteroids = (2, 6)
+    # Минимальное и максимальное кол-во астероидов после деления
+    # большого астероида.
+    __min_max_new_asteroids = (2, 4)
 
     def __init__(self,
                  skin: pygame.Surface,
@@ -40,6 +42,7 @@ class Asteroid(pygame.sprite.Sprite):
         # Задаем радиус и представление объекта.
         self.radius = size
         self.image = pygame.transform.scale(skin, (size * 2, size * 2))
+        # Игнорируем черный цвет и не отрисовываем его.
         self.image.set_colorkey(settings.Collors.BLACK.value)
 
         # Задаем позицию, угол и скорость астероида.
@@ -80,19 +83,6 @@ class Asteroid(pygame.sprite.Sprite):
                 or self.y + self.radius < 0 or self.y - self.radius > settings.HEIGHT:
             self.kill()
 
-        # if self.x > settings.WIDTH - self.radius:
-        #     self.x = 2 * (settings.WIDTH - self.radius) - self.x
-        #     self.angle = - self.angle
-        # elif self.x < self.radius:
-        #     self.x = 2 * self.radius - self.x
-        #     self.angle = - self.angle
-        # if self.y > settings.HEIGHT - self.radius:
-        #     self.y = 2 * (settings.HEIGHT - self.radius) - self.y
-        #     self.angle = math.pi - self.angle
-        # elif self.y < self.radius:
-        #     self.y = 2 * self.radius - self.y
-        #     self.angle = math.pi - self.angle
-
         # Меняем положение объектов в пространстве.
         self.x += math.sin(self.angle) * self.speed
         self.y -= math.cos(self.angle) * self.speed
@@ -104,6 +94,7 @@ class Asteroid(pygame.sprite.Sprite):
 
         :param screen: Экран, на который нужно рисовать.
         """
+
         if self.health < 0:
             self.health = 0
         BAR_LENGTH = 45
@@ -127,53 +118,41 @@ class Asteroid(pygame.sprite.Sprite):
     def split_asteroid(self) -> List['Asteroid']:
         """Метод разбиения астероида на два меньших"""
 
+        # Выбираем случайное кол-во астероидов.
         count_new_asteroids = random.randint(*self.__min_max_new_asteroids)
+        # Высчитываем новый вес и размеры астероидов.
         new_weight = self.get_weight() // (count_new_asteroids + 2)
         new_radius = (3 * new_weight / math.pi) ** (1 / 3)
 
+        # Формируем список новых астероидов.
         new_small_asteroids: List[Asteroid] = []
         for _ in range(count_new_asteroids):
+            # Немного замедлим новые астероиды после взрыва большего.
             new_speed = self.speed * 0.9
-            level = random.choice(list(settings.asteroid_skins.keys()))
-            random_skin = random.choice(settings.asteroid_skins[level])
-            new_small_asteroids.append(Asteroid(random_skin, new_radius, new_speed,
-                                                self.x, self.y))
+            # Выбираем случайный скин.
+            skin_level = random.choice(list(settings.asteroid_skins.keys()))
+            random_skin = random.choice(settings.asteroid_skins[skin_level])
+            new_small_asteroids.append(Asteroid(
+                skin=random_skin,
+                size=new_radius,
+                speed=new_speed,
+                pos_x=self.x,
+                pos_y=self.y,
+            ))
 
         return new_small_asteroids
-
-    @classmethod
-    def generate_asteroids(cls: 'Asteroid', skins: Dict[str, List[pygame.Surface]],
-                           count: int, min_size: int, max_size: int,
-                           min_speed: int, max_speed: int) -> List['Asteroid']:
-        """
-        Метод генерации игроков.
-
-        :param count: Количество генерируемых астероидов.
-        :param min_size: Минимальный размер.
-        :param max_size: Максимальный размер.
-        :param min_speed: Минимальная скорость.
-        :param max_speed: Максимальная скорость.
-        :return: Список объектов Player.
-        """
-
-        asteroids = []
-        for _ in range(count):
-            random_size = random.randint(min_size, max_size)
-            random_speed = random.randint(min_speed, max_speed) / 100
-            level = random.choice(list(skins.keys()))
-            random_skin = random.choice(skins[level])
-            new_asteroid = Asteroid(random_skin,
-                                    random_size, random_speed)
-            asteroids.append(new_asteroid)
-
-        return asteroids
 
     def __repr__(self) -> str:
         return f'Asteroid(x={self.rect.centerx}, y={self.rect.centery})'
 
 
 class AsteroidType:
-    """Класс, задающий какой-то тип астероидов"""
+    """
+    Класс, задающий тип астероидов.
+
+    На основе данных этого класса будут генирироваться экземпляры
+    класса Asteroid с различными значениями.
+    """
 
     def __init__(self,
                  min_max_radius: Tuple[int, int],

@@ -1,24 +1,31 @@
 import pygame
-from pathlib import Path
 
 import settings
-from asteroid import (
-    Asteroid,
-    AsteroidType,
-)
 from player import Player
-from collider.collide_resolve_factory import CollideResolveFactory
+from game_objects import GameObjects
+from src.asteroids.asteroid import AsteroidType
 from collider.collide_resolver import CollideResolver
-from asteroid_level_manager import AsteroidLevelManager
+from collider.collide_resolve_factory import CollideResolveFactory
+from src.asteroids.asteroids_manager import AsteroidsManager
 
 
 def main():
     """Главная функция программы"""
 
-    # Создаем и настраиваем коллайдер.
-    collide_resolver = CollideResolver(collide_resolve_factory=CollideResolveFactory())
+    # Инициализируем единственный экземпляр класса игровых объектов.
+    # Этот класс служит глобальной точкой получения общих игровых объектов
+    # по типу групп спрайтов, экрана игры и прочего.
+    game_objects = GameObjects()
 
-    # Создаем типы астероидов.
+    # Создаем и настраиваем коллайдер.
+    # Коллайдер использует внутри себя фабрику решений, которая по типам
+    # столкнувшихся объектов выбирает нужное решение.
+    collide_resolver = CollideResolver(
+        collide_resolve_factory=CollideResolveFactory()
+    )
+
+    # Создаем типы астероидов. На основе этих объектов менеджер астероидов
+    # будет генерировать астероиды.
     asteroid_types = [
         AsteroidType(
             min_max_radius=(10, 20),
@@ -42,58 +49,62 @@ def main():
         ),
     ]
     # Создаем менеджер астероидов.
-    asteroid_manager = AsteroidLevelManager(
+    asteroid_manager = AsteroidsManager(
         start_frequency=2500,
         frequency_delta=450,
         asteroid_types=asteroid_types,
         score_levels=[500, 1000, 2000, 5000, 10000],
     )
-
     # Создаем игрока.
-    player = Player(skin=settings.player_skin,
-                    bullet_skin=settings.bullet_skin,
-                    health=200, speed=2.5, damage=25,
-                    radius=25, shoot_delay=300, score=5000)
-    settings.players_group.add(player)
+    player = Player(
+        skin=settings.player_skin,
+        bullet_skin=settings.bullet_skin,
+        health=200, speed=2.7, damage=18,
+        radius=25, shoot_delay=300, score=0,
+    )
+    game_objects.players_group.add(player)
 
-    # Цикл игры.
+    # Игровой цикл.
     running = True
     while running:
         # Держим цикл на правильной скорости.
         settings.clock.tick(settings.FPS)
-        # Ввод процесса (события).
+
+        # Получений произошедших событий из списка событий игры.
         for event in pygame.event.get():
             # Проверка события закрытия игры.
             if event.type == pygame.QUIT:
                 running = False
+            # Обработка стельбы игрока.
             if player.health > 0 and event.type == pygame.MOUSEBUTTONDOWN \
                     and event.button == 1:
                 player.shoot()
 
+        # ============================================
         # Менеджер астероидов контролирует создание астероидов,
         # их типы, их частоту появления.
         if asteroid_manager.level_complete(player.score):
             asteroid_manager.level_up()
         new_asteroid = asteroid_manager.start()
         if new_asteroid is not None:
-            settings.asteroids_sprites.add(new_asteroid)
+            game_objects.asteroids_sprites.add(new_asteroid)
 
         # Обновление.
         # Добавляем в квадродерево астероиды.
-        settings.quadtree.clear()
-        for obj in settings.asteroids_sprites:
-            settings.quadtree.add(obj)
+        game_objects.quadtree.clear()
+        for obj in game_objects.asteroids_sprites:
+            game_objects.quadtree.add(obj)
         # Добавляем в квадродерево игрока.
         if player.health > 0:
-            settings.quadtree.add(player)
+            game_objects.quadtree.add(player)
         # Добавляем в квадродерево снаряды игрока.
-        for bullet in settings.bullets_group:
-            settings.quadtree.add(bullet)
+        for bullet in game_objects.bullets_group:
+            game_objects.quadtree.add(bullet)
 
         # Решение коллизий.
         # Выбираем все листы дерева, где больше 1 элемента, и проверяем
         # на наличие коллизий. Если есть - решаем их.
-        collision_nodes = settings.quadtree.get_collision_nodes()
+        collision_nodes = game_objects.quadtree.get_collision_nodes()
         for node in collision_nodes:
             node_objects = node.get_data()
             for i in range(len(node_objects) - 1):
@@ -101,10 +112,10 @@ def main():
                     collide_resolver.resolve(node_objects[i], node_objects[k])
 
         # Обновляем все спрайты.
-        settings.explosions_sprites.update()
-        settings.asteroids_sprites.update()
+        game_objects.explosions_sprites.update()
+        game_objects.asteroids_sprites.update()
         player.update()
-        settings.bullets_group.update()
+        game_objects.bullets_group.update()
         # Обновляем текст со счетом.
         score_text = settings.my_font.render(f'Score: {int(player.score)}', True,
                                              settings.Collors.WHITE.value)
@@ -114,6 +125,7 @@ def main():
             True, settings.Collors.WHITE.value,
         )
 
+        # ============================================
         # Отрисовка спрайтов.
         # Отрисовка заднего фона.
         for y in range(0, settings.HEIGHT, settings.background.get_height()):
@@ -122,19 +134,19 @@ def main():
 
         # Отрисовка всех спрайтов и квадродерева.
         # Отрисовка игрока и его здоровья.
-        settings.players_group.draw(settings.screen)
+        game_objects.players_group.draw(settings.screen)
         if player.health > 0:
             player.draw_health_bar(settings.screen)
         # Отрисовка всех пуль.
-        settings.bullets_group.draw(settings.screen)
+        game_objects.bullets_group.draw(settings.screen)
         # Отрисовка астероидов и их здоровья.
-        settings.asteroids_sprites.draw(settings.screen)
-        for astr in settings.asteroids_sprites:
+        game_objects.asteroids_sprites.draw(settings.screen)
+        for astr in game_objects.asteroids_sprites:
             astr.draw_health_bar(settings.screen)
         # Отрисовка всех взрывов.
-        settings.explosions_sprites.draw(settings.screen)
+        game_objects.explosions_sprites.draw(settings.screen)
         # Отрисовка квадродерева.
-        # settings.quadtree.draw_quadtree(settings.screen)
+        game_objects.quadtree.draw_quadtree(settings.screen)
 
         # Отрисовка счета игрока.
         settings.screen.blit(score_text, (10, settings.HEIGHT - 50))

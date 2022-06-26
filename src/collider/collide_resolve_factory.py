@@ -9,6 +9,8 @@ class CollideResolveFactory(AbstractCollideResolveFactory):
     """Фабрика решений коллизий объектов"""
 
     # Список доступных решений в фабрике.
+    # Список предоставляет классы, которые решают столкновений двух объектов
+    # определенного типа.
     __allowed_resolves = [
         resolves.AsteroidCollideResolve,
         resolves.AsteroidPlayerCollideResolve,
@@ -19,7 +21,7 @@ class CollideResolveFactory(AbstractCollideResolveFactory):
     def create_resolve(cls, obj_1: Collideable, obj_2: Collideable) \
             -> Optional[resolves.AbstractCollideResolve]:
         """
-        Создание решения коллизии двух объектов.
+        Создание объекта решения коллизии двух объектов.
 
         Решение определяется, когда имена классов двух объектов
         совпадают с именами классов объектов в очередном решении.
