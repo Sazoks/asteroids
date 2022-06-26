@@ -102,9 +102,6 @@ class AsteroidsGenerator(ManagingLevels):
     def get_current_level(self) -> int:
         return self.__current_level
 
-    def get_cur_freq(self) -> int:
-        return self.__current_frequency
-
     def level_up(self) -> None:
         """Повышения уровня"""
 

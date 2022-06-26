@@ -25,7 +25,7 @@ class AsteroidBulletCollideResolve(AbstractCollideResolve):
         self.__bullet = bullet
 
     @staticmethod
-    def get_object_types() -> Tuple[str, str]:
+    def get_object_types() -> tuple:
         """
         Геттер для получения имен классов объектов, столкновения
         которых может решать этот резолвер.
@@ -34,7 +34,7 @@ class AsteroidBulletCollideResolve(AbstractCollideResolve):
             Кортеж имен классов объектов, которые могут сталкиваться.
         """
 
-        return Asteroid.__name__, Bullet.__name__
+        return Asteroid, Bullet
 
     def resolve(self) -> None:
         """Обработка столкновения двух объектов"""
@@ -50,7 +50,7 @@ class AsteroidBulletCollideResolve(AbstractCollideResolve):
             # Анимация взрыва при попадании в астероид.
             random.choice(settings.expl_sounds).play()
             exp = Explosion(self.__bullet.rect.center, self.__bullet.height)
-            game_objects.explosions_sprites.add(exp)
+            game_objects.explosions_group.add(exp)
 
             if self.__asteroid.health <= 0:
                 self.__asteroid.kill()
@@ -64,10 +64,10 @@ class AsteroidBulletCollideResolve(AbstractCollideResolve):
                 if self.__asteroid.radius >= self.__asteroid.get_min_size():
                     new_asteroids = self.__asteroid.split_asteroid()
                     for asteroid in new_asteroids:
-                        game_objects.asteroids_sprites.add(asteroid)
+                        game_objects.asteroids_group.add(asteroid)
 
                 # Создаем анимацию взрыва на месте астероида.
                 random.choice(settings.expl_sounds).play()
                 exp = Explosion(self.__asteroid.rect.center,
                                 self.__asteroid.radius * 2.2)
-                game_objects.explosions_sprites.add(exp)
+                game_objects.explosions_group.add(exp)

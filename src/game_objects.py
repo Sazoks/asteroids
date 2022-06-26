@@ -38,8 +38,9 @@ class GameObjects(metaclass=Singleton):
         # В них будут помещаться все игровые объекты.
         self.__players_group = pygame.sprite.Group()
         self.__bullets_group = pygame.sprite.Group()
-        self.__asteroids_sprites = pygame.sprite.Group()
-        self.__explosions_sprites = pygame.sprite.Group()
+        self.__asteroids_group = pygame.sprite.Group()
+        self.__explosions_group = pygame.sprite.Group()
+        self.__powerups_group = pygame.sprite.Group()
 
     @property
     def quadtree(self) -> Quadtree:
@@ -54,9 +55,13 @@ class GameObjects(metaclass=Singleton):
         return self.__bullets_group
 
     @property
-    def asteroids_sprites(self) -> pygame.sprite.Group:
-        return self.__asteroids_sprites
+    def asteroids_group(self) -> pygame.sprite.Group:
+        return self.__asteroids_group
 
     @property
-    def explosions_sprites(self) -> pygame.sprite.Group:
-        return self.__explosions_sprites
+    def explosions_group(self) -> pygame.sprite.Group:
+        return self.__explosions_group
+
+    @property
+    def powerups_group(self) -> pygame.sprite.Group:
+        return self.__powerups_group

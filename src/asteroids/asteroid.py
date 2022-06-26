@@ -3,7 +3,6 @@ import pygame
 import math
 from typing import (
     List,
-    Dict,
     Optional,
     Tuple,
 )
@@ -14,10 +13,10 @@ import settings
 class Asteroid(pygame.sprite.Sprite):
     """Класс астероидов"""
 
-    # Значение, при котором астероид не должен делиться.
+    # Значение в px, при котором астероид не должен делиться.
     __min_radius = 30
     # Минимальное и максимальное кол-во астероидов после деления
-    # большого астероида.
+    # большего астероида.
     __min_max_new_asteroids = (2, 4)
 
     def __init__(self,
@@ -183,9 +182,12 @@ class AsteroidType:
         radius = random.randint(*self.__min_max_radius)
         speed = random.randint(*self.__min_max_speed) / 100
         skin = random.choice(self.__skins)
-        angle = math.pi + random.uniform(0, math.pi / 4) * random.choice([-1, 1])
-        new_asteroid = Asteroid(skin=skin, size=radius,
-                                speed=speed, pos_y=-radius + 1,
-                                angle=angle)
+        angle = math.pi + random.uniform(0, math.pi / 4) \
+                * random.choice([-1, 1])
+        new_asteroid = Asteroid(
+            skin=skin, size=radius,
+            speed=speed, pos_y=-radius + 1,
+            angle=angle,
+        )
 
         return new_asteroid

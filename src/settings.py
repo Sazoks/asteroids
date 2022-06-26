@@ -68,6 +68,7 @@ asteroid_skins = {
 }
 player_skin = pygame.image.load(sprites_dir / 'PNG/playerShip1_orange.png')
 bullet_skin = pygame.image.load(sprites_dir / 'PNG/Lasers/laserBlue01.png')
+attack_speed_powerup_skin = pygame.image.load(sprites_dir / 'PNG/Power-ups/things_gold.png')
 
 # Загружаем спрайты для анимации взрыва.
 explosion_anim: List[pygame.Surface] = []
@@ -90,6 +91,6 @@ chunky_expl = pygame.mixer.Sound(audio_dir / f'expls/chunky_expl.mp3')
 chunky_expl.set_volume(0.7)
 
 # Загрузка музыки.
-pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
-pygame.mixer.music.set_volume(0.05)
-pygame.mixer.music.play(-1)
+# pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
+# pygame.mixer.music.set_volume(0.05)
+# pygame.mixer.music.play(-1)

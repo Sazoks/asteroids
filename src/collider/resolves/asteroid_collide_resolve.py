@@ -20,7 +20,7 @@ class AsteroidCollideResolve(AbstractCollideResolve):
         self.__asteroid_2 = asteroid_2
 
     @staticmethod
-    def get_object_types() -> Tuple[str, str]:
+    def get_object_types() -> tuple:
         """
         Геттер для получения имен классов объектов, столкновения
         которых может решать этот резолвер.
@@ -29,7 +29,7 @@ class AsteroidCollideResolve(AbstractCollideResolve):
             Кортеж имен классов объектов, которые могут сталкиваться.
         """
 
-        return Asteroid.__name__, Asteroid.__name__
+        return Asteroid, Asteroid
 
     def resolve(self) -> None:
         """Обработка столкновения объекта с другим объектом"""

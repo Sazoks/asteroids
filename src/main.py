@@ -9,6 +9,7 @@ from collider.collide_resolve_factory import CollideResolveFactory
 from levels.level import Level
 from levels.levels_manager import LevelsManager
 from generators.asteroids_generator import AsteroidsGenerator
+from generators.powerups_generator import PowerupsGenerator
 
 
 def main():
@@ -23,7 +24,7 @@ def main():
     # Коллайдер использует внутри себя фабрику решений, которая по типам
     # столкнувшихся объектов выбирает нужное решение.
     collide_resolver = CollideResolver(
-        collide_resolve_factory=CollideResolveFactory()
+        collide_resolve_factory=CollideResolveFactory(),
     )
 
     # Создаем список уровней.
@@ -64,9 +65,15 @@ def main():
         asteroid_types=asteroid_types,
         max_level=len(levels),
     )
-
     # Регистрируем генератор астероидов в менджере уровней.
     levels_manager.register_object(asteroid_generator)
+
+    # Создаем генератор усилений.
+    powerups_generator = PowerupsGenerator(
+        start_frequency=15000,
+        max_level=100,
+    )
+    levels_manager.register_object(powerups_generator)
 
     # Создаем игрока.
     player = Player(
@@ -101,12 +108,21 @@ def main():
         # Генерируем новый астероид.
         new_asteroid = asteroid_generator.generate()
         if new_asteroid is not None:
-            game_objects.asteroids_sprites.add(new_asteroid)
+            game_objects.asteroids_group.add(new_asteroid)
+
+        # Генерируем новое усиление.
+        new_powerup = powerups_generator.generate()
+        if new_powerup is not None:
+            game_objects.powerups_group.add(new_powerup)
 
         # Обновление.
         # Добавляем в квадродерево астероиды.
         game_objects.quadtree.clear()
-        for obj in game_objects.asteroids_sprites:
+        # Добавляем в квадродерево усиления.
+        for powerup in game_objects.powerups_group:
+            game_objects.quadtree.add(powerup)
+        # Добавляем в квадродерево астероиды.
+        for obj in game_objects.asteroids_group:
             game_objects.quadtree.add(obj)
         # Добавляем в квадродерево игрока.
         if player.health > 0:
@@ -126,8 +142,9 @@ def main():
                     collide_resolver.resolve(node_objects[i], node_objects[k])
 
         # Обновляем все спрайты.
-        game_objects.explosions_sprites.update()
-        game_objects.asteroids_sprites.update()
+        game_objects.powerups_group.update()
+        game_objects.explosions_group.update()
+        game_objects.asteroids_group.update()
         player.update()
         game_objects.bullets_group.update()
         # Обновляем текст со счетом.
@@ -136,7 +153,6 @@ def main():
         # Обновляем уровень.
         current_level_text = settings.my_font.render(
             f'Level: {levels_manager.get_current_level()}  '
-            f'{asteroid_generator.get_cur_freq()}  '
             f'AstGen Level: {asteroid_generator.get_current_level()}',
             True, settings.Collors.WHITE.value,
         )
@@ -150,17 +166,18 @@ def main():
 
         # Отрисовка всех спрайтов и квадродерева.
         # Отрисовка игрока и его здоровья.
+        game_objects.powerups_group.draw(settings.screen)
         game_objects.players_group.draw(settings.screen)
         if player.health > 0:
             player.draw_health_bar(settings.screen)
         # Отрисовка всех пуль.
         game_objects.bullets_group.draw(settings.screen)
         # Отрисовка астероидов и их здоровья.
-        game_objects.asteroids_sprites.draw(settings.screen)
-        for astr in game_objects.asteroids_sprites:
+        game_objects.asteroids_group.draw(settings.screen)
+        for astr in game_objects.asteroids_group:
             astr.draw_health_bar(settings.screen)
         # Отрисовка всех взрывов.
-        game_objects.explosions_sprites.draw(settings.screen)
+        game_objects.explosions_group.draw(settings.screen)
         # Отрисовка квадродерева.
         game_objects.quadtree.draw_quadtree(settings.screen)
 

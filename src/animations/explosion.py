@@ -37,7 +37,7 @@ class Explosion(pygame.sprite.Sprite):
     def update(self) -> None:
         """Запуск шага анимации"""
 
-        # Обновляем спрайт текущего объекта взрыва на нужно скорости
+        # Обновляем спрайт текущего объекта взрыва на нужной скорости
         # вопспроизведения анимации.
         now = pygame.time.get_ticks()
         if now - self.last_update > self.frame_rate:
