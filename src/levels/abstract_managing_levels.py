@@ -20,3 +20,11 @@ class ManagingLevels(ABC):
     @abstractmethod
     def level_down(self) -> None:
         pass
+
+    @abstractmethod
+    def reset_levels(self) -> None:
+        pass
+
+    @abstractmethod
+    def get_current_level(self) -> int:
+        pass

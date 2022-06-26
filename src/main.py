@@ -3,10 +3,12 @@ import pygame
 import settings
 from player import Player
 from game_objects import GameObjects
-from src.asteroids.asteroid import AsteroidType
+from asteroids.asteroid import AsteroidType
 from collider.collide_resolver import CollideResolver
 from collider.collide_resolve_factory import CollideResolveFactory
-from src.asteroids.asteroids_manager import AsteroidsManager
+from levels.level import Level
+from levels.levels_manager import LevelsManager
+from generators.asteroids_generator import AsteroidsGenerator
 
 
 def main():
@@ -24,7 +26,15 @@ def main():
         collide_resolve_factory=CollideResolveFactory()
     )
 
-    # Создаем типы астероидов. На основе этих объектов менеджер астероидов
+    # Создаем список уровней.
+    levels = [Level(score=100 * (i + 1)) for i in range(15)]
+
+    # Создаем менеджер уровней. Менеджер отвечает за контроль уровня игры
+    # и контролирует уровни зарегестрированных в нем игровых объектов по типу
+    # генераторов.
+    levels_manager = LevelsManager(levels=levels)
+
+    # Создаем типы астероидов. На основе этих объектов генератор астероидов
     # будет генерировать астероиды.
     asteroid_types = [
         AsteroidType(
@@ -48,19 +58,22 @@ def main():
             skins=settings.asteroid_skins['large'],
         ),
     ]
-    # Создаем менеджер астероидов.
-    asteroid_manager = AsteroidsManager(
+    # Создаем генератор астероидов.
+    asteroid_generator = AsteroidsGenerator(
         start_frequency=2500,
-        frequency_delta=450,
         asteroid_types=asteroid_types,
-        score_levels=[500, 1000, 2000, 5000, 10000],
+        max_level=len(levels),
     )
+
+    # Регистрируем генератор астероидов в менджере уровней.
+    levels_manager.register_object(asteroid_generator)
+
     # Создаем игрока.
     player = Player(
         skin=settings.player_skin,
         bullet_skin=settings.bullet_skin,
-        health=200, speed=2.7, damage=18,
-        radius=25, shoot_delay=300, score=0,
+        health=200, speed=2.5, damage=18,
+        radius=25, shoot_delay=350, score=0,
     )
     game_objects.players_group.add(player)
 
@@ -81,11 +94,12 @@ def main():
                 player.shoot()
 
         # ============================================
-        # Менеджер астероидов контролирует создание астероидов,
-        # их типы, их частоту появления.
-        if asteroid_manager.level_complete(player.score):
-            asteroid_manager.level_up()
-        new_asteroid = asteroid_manager.start()
+        # Проверяем, нужно ли повышать уровень игры.
+        if levels_manager.level_complete(player.score):
+            levels_manager.level_up()
+
+        # Генерируем новый астероид.
+        new_asteroid = asteroid_generator.generate()
         if new_asteroid is not None:
             game_objects.asteroids_sprites.add(new_asteroid)
 
@@ -121,7 +135,9 @@ def main():
                                              settings.Collors.WHITE.value)
         # Обновляем уровень.
         current_level_text = settings.my_font.render(
-            f'Level: {asteroid_manager.get_current_level()}',
+            f'Level: {levels_manager.get_current_level()}  '
+            f'{asteroid_generator.get_cur_freq()}  '
+            f'AstGen Level: {asteroid_generator.get_current_level()}',
             True, settings.Collors.WHITE.value,
         )
 

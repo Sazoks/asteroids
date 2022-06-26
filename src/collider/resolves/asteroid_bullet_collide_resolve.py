@@ -3,8 +3,8 @@ import random
 from typing import Tuple
 
 import settings
-from bullet import Bullet
-from explosion import Explosion
+from bullets.bullet import Bullet
+from animations.explosion import Explosion
 from game_objects import GameObjects
 from asteroids.asteroid import Asteroid
 from .abstract_collide_resolve import AbstractCollideResolve

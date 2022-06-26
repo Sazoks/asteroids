@@ -9,12 +9,13 @@ from .level import Level
 from .abstract_managing_levels import ManagingLevels
 
 
-class LevelsManager:
+class LevelsManager(ManagingLevels):
     """
     Класс для управления уровнями игры.
 
     Отвечает за контроль текущего уровня игры, а также за управление
-    уровнями игровых объектов. Например, генераторы астероидов, усилений.
+    уровнями игровых объектов. Например, генераторы астероидов, усилений или
+    другие менеджеры уровней.
     """
 
     def __init__(self, levels: List[Level],
@@ -33,12 +34,14 @@ class LevelsManager:
             self.__managed_objects = {}
         else:
             # Для обеспечения уникальности объектов используем словарь с
-            # их id. Использовать set() я решил не целесообразным, т.к. тогда
-            # логика обеспечения уникальности будет зависеть от методов
-            # __eq__ и __hash__. В случае с словарем мы по факту обеспечиваем
-            # уникальность объектов с помощью их адреса в памяти и только.
+            # id() объектов в качестве ключей. Использовать set() я решил
+            # не целесообразным, т.к. тогда логика обеспечения уникальности
+            # будет зависеть от методов __eq__ и __hash__. В случае с словарем
+            # мы по факту обеспечиваем уникальность объектов с помощью их
+            # адреса в памяти и только.
             self.__managed_objects \
                 = self._create_dict_managed_objects(managed_objects)
+
 
         self.__levels = self._validate_levels(levels)
         self.__level_cursor = 0
@@ -60,6 +63,9 @@ class LevelsManager:
 
         return score >= self.__levels[self.__level_cursor].score
 
+    def get_current_level(self) -> int:
+        return self.__level_cursor
+
     def level_up(self) -> None:
         """Повышение уровня"""
 
@@ -77,6 +83,13 @@ class LevelsManager:
             self.__level_cursor -= 1
             for obj in self.__managed_objects.values():
                 obj.level_down()
+
+    def reset_levels(self) -> None:
+        """Сброс уровней"""
+
+        self.__level_cursor = 0
+        for obj in self.__managed_objects.values():
+            obj.reset_levels()
 
     @staticmethod
     def _create_dict_managed_objects(

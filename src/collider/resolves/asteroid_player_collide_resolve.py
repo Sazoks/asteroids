@@ -4,7 +4,7 @@ from typing import Tuple
 
 import settings
 from player import Player
-from explosion import Explosion
+from animations.explosion import Explosion
 from game_objects import GameObjects
 from asteroids.asteroid import Asteroid
 from .abstract_collide_resolve import AbstractCollideResolve

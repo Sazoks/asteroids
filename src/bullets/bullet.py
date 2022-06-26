@@ -24,7 +24,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.damage = damage
         self.angle = angle
-        self.speed = 15
+        self.speed = 18
         self.rot = 0
 
         # Поворачиваем снаряд в нужную сторону.

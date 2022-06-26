@@ -1,10 +1,9 @@
 import pygame
-import random
 import math
 
 import settings
 from game_objects import GameObjects
-from bullet import Bullet
+from bullets.bullet import Bullet
 
 
 class Player(pygame.sprite.Sprite):
@@ -34,7 +33,8 @@ class Player(pygame.sprite.Sprite):
 
         # Радиус и изображение объекта.
         self.radius = radius
-        self.image_orig = pygame.transform.scale(skin, (self.radius * 2, self.radius * 2))
+        self.image_orig = pygame.transform.scale(skin, (self.radius * 2,
+                                                        self.radius * 2))
         self.image_orig.set_colorkey(settings.Collors.BLACK.value)
         self.image = self.image_orig.copy()
 

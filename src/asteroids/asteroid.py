@@ -168,6 +168,7 @@ class AsteroidType:
         :param skins: Скины на астероиды этого типа.
         """
 
+        # TODO: Добавить проверку, что min_max[0] < min_max[1].
         self.__min_max_radius = min_max_radius
         self.__min_max_speed = min_max_speed
         self.__skins = skins
