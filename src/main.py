@@ -2,7 +2,7 @@ import pygame
 
 import settings
 from player import Player
-from game_objects import GameObjects
+from global_game_objects import GlobalGameObjects
 from asteroids.asteroid import AsteroidType
 from collider.collide_resolver import CollideResolver
 from collider.collide_resolve_factory import CollideResolveFactory
@@ -18,7 +18,7 @@ def main():
     # Инициализируем единственный экземпляр класса игровых объектов.
     # Этот класс служит глобальной точкой получения общих игровых объектов
     # по типу групп спрайтов, экрана игры и прочего.
-    game_objects = GameObjects()
+    game_objects = GlobalGameObjects()
 
     # Создаем и настраиваем коллайдер.
     # Коллайдер использует внутри себя фабрику решений, которая по типам
@@ -70,7 +70,7 @@ def main():
 
     # Создаем генератор усилений.
     powerups_generator = PowerupsGenerator(
-        start_frequency=15000,
+        start_frequency=10000,
         max_level=100,
     )
     levels_manager.register_object(powerups_generator)
@@ -83,6 +83,8 @@ def main():
         radius=25, shoot_delay=350, score=0,
     )
     game_objects.players_group.add(player)
+    # Регистрируем игрока в менджере активных усилений.
+    game_objects.active_powerups_manager.register_player(player)
 
     # Игровой цикл.
     running = True
@@ -98,12 +100,23 @@ def main():
             # Обработка стельбы игрока.
             if player.health > 0 and event.type == pygame.MOUSEBUTTONDOWN \
                     and event.button == 1:
-                player.shoot()
+                # FIXME: Убрать.
+                # print('123')
+                # new_bullet = player.shoot()
+                # if new_bullet is not None:
+                #     GlobalGameObjects().bullets_group.add(new_bullet)
+                #     pygame.mixer.Channel(0).play(settings.shoot_sound)
+                ...
 
         # ============================================
         # Проверяем, нужно ли повышать уровень игры.
         if levels_manager.level_complete(player.score):
             levels_manager.level_up()
+
+        # FIXME: Циклический импорт... Менджер активных усилений не может
+        #  находится в GlobalGameObjects.
+        # Контролируем работу активных усилений на игрока.
+        game_objects.active_powerups_manager.control_powerups()
 
         # Генерируем новый астероид.
         new_asteroid = asteroid_generator.generate()
@@ -115,8 +128,16 @@ def main():
         if new_powerup is not None:
             game_objects.powerups_group.add(new_powerup)
 
+        # Стрельба игрока.
+        new_player_bullet = player.shoot()
+        if new_player_bullet is not None:
+            pygame.mixer.Channel(0).play(settings.shoot_sound)
+            game_objects.bullets_group.add(new_player_bullet)
+
         # Обновление.
         # Добавляем в квадродерево астероиды.
+        # FIXME:
+        #  Сделать удаление объектов из квадродерева вместо полного отчищения.
         game_objects.quadtree.clear()
         # Добавляем в квадродерево усиления.
         for powerup in game_objects.powerups_group:
@@ -152,8 +173,7 @@ def main():
                                              settings.Collors.WHITE.value)
         # Обновляем уровень.
         current_level_text = settings.my_font.render(
-            f'Level: {levels_manager.get_current_level()}  '
-            f'AstGen Level: {asteroid_generator.get_current_level()}',
+            f'Level: {levels_manager.get_current_level()}',
             True, settings.Collors.WHITE.value,
         )
 

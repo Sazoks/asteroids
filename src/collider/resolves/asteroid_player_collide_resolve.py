@@ -1,11 +1,10 @@
 import pygame
 import random
-from typing import Tuple
 
 import settings
 from player import Player
 from animations.explosion import Explosion
-from game_objects import GameObjects
+from global_game_objects import GlobalGameObjects
 from asteroids.asteroid import Asteroid
 from .abstract_collide_resolve import AbstractCollideResolve
 
@@ -40,7 +39,7 @@ class AsteroidPlayerCollideResolve(AbstractCollideResolve):
         """Обработка столкновения двух объектов"""
 
         if pygame.sprite.collide_circle(self.__player, self.__asteroid):
-            game_objects = GameObjects()
+            game_objects = GlobalGameObjects()
 
             self.__player.health -= self.__asteroid.radius
             if self.__player.health <= 0:

@@ -6,8 +6,12 @@ from typing import (
 )
 
 from levels.abstract_managing_levels import ManagingLevels
-from powerups.abstract_powerup import Powerup
-from powerups.attack_speed_powerup import AttackSpeedPowerup
+from powerups import (
+    Powerup,
+    AttackSpeedPowerup,
+    SpeedPowerup,
+    HealthPowerup,
+)
 
 
 class PowerupsGenerator(ManagingLevels):
@@ -17,6 +21,8 @@ class PowerupsGenerator(ManagingLevels):
 
     __powerups_classes = [
         AttackSpeedPowerup,
+        SpeedPowerup,
+        HealthPowerup,
     ]
 
     def __init__(self, start_frequency: float, max_level: int) -> None:
@@ -43,7 +49,7 @@ class PowerupsGenerator(ManagingLevels):
         now = pygame.time.get_ticks()
         if now - self.__last_asteroid_spawn >= self.__current_frequency:
             self.__last_asteroid_spawn = now
-            random_powerup = random.choice(self.__powerups_classes)(5000, 5000)
+            random_powerup = random.choice(self.__powerups_classes)()
 
             return random_powerup
 

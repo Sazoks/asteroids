@@ -5,7 +5,7 @@ from typing import Tuple
 import settings
 from bullets.bullet import Bullet
 from animations.explosion import Explosion
-from game_objects import GameObjects
+from global_game_objects import GlobalGameObjects
 from asteroids.asteroid import Asteroid
 from .abstract_collide_resolve import AbstractCollideResolve
 
@@ -40,7 +40,7 @@ class AsteroidBulletCollideResolve(AbstractCollideResolve):
         """Обработка столкновения двух объектов"""
 
         if pygame.sprite.collide_mask(self.__bullet, self.__asteroid):
-            game_objects = GameObjects()
+            game_objects = GlobalGameObjects()
 
             self.__bullet.kill()
             game_objects.quadtree.remove(self.__bullet)

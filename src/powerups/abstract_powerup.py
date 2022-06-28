@@ -17,26 +17,23 @@ class Powerup(pygame.sprite.Sprite, ABC):
     Абстрактный класс усиления для игрока.
     """
 
+    _lifetime = 5000
+    _time_action = 5000
+
     def __init__(
             self,
-            lifetime: int,
-            time_action: int,
             pos_x: Optional[int] = None,
             pos_y: Optional[int] = None,
     ) -> None:
         """
         Инициализатор класса.
 
-        :param lifetime: Время жизни усиления.
-        :param time_action: Время действия усиления.
         :param pos_x: Координаты центра по оси X.
         :param pos_y: Координаты центра по оси Y.
         """
 
         pygame.sprite.Sprite.__init__(self)
 
-        self._lifetime = lifetime
-        self._time_action = time_action
         self._start_time_live = pygame.time.get_ticks()
 
         # Ширина и высота спрайта усиления, объекты спрайтов.
@@ -54,15 +51,43 @@ class Powerup(pygame.sprite.Sprite, ABC):
             settings.HEIGHT - self._size // 2,
         ) if pos_y is None else pos_y
 
+        # Время активации усиления.
+        self._activate_time: Optional[int] = None
+
     @abstractmethod
     def influence(self, player: Player) -> None:
         pass
+
+    @abstractmethod
+    def rollback_param(self, player: Player) -> None:
+        pass
+
+    def activate(self) -> None:
+        """Активация усиления"""
+
+        self._activate_time = pygame.time.get_ticks()
+
+    def activated(self) -> bool:
+        """Статус усиления"""
+
+        return self._activate_time is not None
+
+    def get_activate_time(self) -> Optional[int]:
+        return self._activate_time
+
+    @classmethod
+    def get_lifetime(cls) -> int:
+        return cls._lifetime
+
+    @classmethod
+    def get_time_action(cls) -> int:
+        return cls._time_action
 
     def update(self) -> None:
         """Метод обновления состояния усиления"""
 
         now = pygame.time.get_ticks()
-        if now - self._start_time_live >= self._lifetime:
+        if now - self._start_time_live >= self.get_lifetime():
             self.kill()
         else:
             ...

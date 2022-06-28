@@ -1,10 +1,8 @@
 import pygame
-from typing import (
-    Tuple,
-)
 
 from player import Player
-from powerups.abstract_powerup import Powerup
+from powerups import Powerup
+from global_game_objects import GlobalGameObjects
 from .abstract_collide_resolve import AbstractCollideResolve
 
 
@@ -38,5 +36,10 @@ class PowerupPlayerCollideResolve(AbstractCollideResolve):
         """Обработка столкновения объектов"""
 
         if pygame.sprite.collide_mask(self.__player, self.__powerup):
-            self.__powerup.influence(self.__player)
             self.__powerup.kill()
+            GlobalGameObjects().quadtree.remove(self.__powerup)
+
+            GlobalGameObjects().active_powerups_manager.add_powerup(
+                player=self.__player,
+                new_powerup=self.__powerup,
+            )

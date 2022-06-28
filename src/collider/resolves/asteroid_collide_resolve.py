@@ -1,5 +1,4 @@
 import math
-from typing import Tuple
 
 from asteroids.asteroid import Asteroid
 from .abstract_collide_resolve import AbstractCollideResolve
@@ -53,7 +52,7 @@ class AsteroidCollideResolve(AbstractCollideResolve):
                       * math.cos(self.__asteroid_2.angle)
             new_distance = math.sqrt((new_x_1 - new_x_2) ** 2 + (new_y_1 - new_y_2) ** 2)
 
-            # Проверка на прближение объектов.
+            # Проверка на приближение объектов.
             if self.__asteroid_1.radius + self.__asteroid_2.radius > new_distance:
                 # Угол столкновения объектов.
                 angle = math.atan2(dy, dx) + 0.5 * math.pi

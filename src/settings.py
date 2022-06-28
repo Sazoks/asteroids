@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 # Настройки игрового окна.
-WIDTH = 900
+WIDTH = 1100
 HEIGHT = 900
 FPS = 60
 
@@ -69,6 +69,8 @@ asteroid_skins = {
 player_skin = pygame.image.load(sprites_dir / 'PNG/playerShip1_orange.png')
 bullet_skin = pygame.image.load(sprites_dir / 'PNG/Lasers/laserBlue01.png')
 attack_speed_powerup_skin = pygame.image.load(sprites_dir / 'PNG/Power-ups/things_gold.png')
+speed_powerup_skin = pygame.image.load(sprites_dir / 'PNG/Power-ups/powerupBlue_bolt.png')
+health_powerup_skin = pygame.image.load(sprites_dir / 'PNG/Power-ups/pill_green.png')
 
 # Загружаем спрайты для анимации взрыва.
 explosion_anim: List[pygame.Surface] = []
@@ -81,16 +83,16 @@ for i in range(9):
 
 # Загрузка звуков.
 shoot_sound = pygame.mixer.Sound(audio_dir / 'sfx_laser1.ogg')
-shoot_sound.set_volume(0.3)
+shoot_sound.set_volume(0.2)
 expl_sounds = []
 for i in range(2, 4):
     sound = pygame.mixer.Sound(audio_dir / f'expls/type2/explosion{i + 1}.ogg')
     sound.set_volume(0.1)
     expl_sounds.append(sound)
 chunky_expl = pygame.mixer.Sound(audio_dir / f'expls/chunky_expl.mp3')
-chunky_expl.set_volume(0.7)
+chunky_expl.set_volume(0.5)
 
 # Загрузка музыки.
-# pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
-# pygame.mixer.music.set_volume(0.05)
-# pygame.mixer.music.play(-1)
+pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
+pygame.mixer.music.set_volume(0.05)
+pygame.mixer.music.play(-1)

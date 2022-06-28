@@ -1,13 +1,15 @@
 import pygame
 import math
+from typing import Optional
 
 import settings
-from game_objects import GameObjects
 from bullets.bullet import Bullet
 
 
 class Player(pygame.sprite.Sprite):
     """Класс игрока"""
+
+    __last_id = 0
 
     def __init__(self,
                  skin: pygame.Surface, bullet_skin: pygame.Surface,
@@ -57,6 +59,12 @@ class Player(pygame.sprite.Sprite):
         # Параметры для вращения.
         self.rot = 0
 
+        self.__id = self.__last_id
+        self.__last_id += 1
+
+    def get_id(self) -> int:
+        return self.__id
+
     def update(self) -> None:
         """Метод обновления состояния игрока"""
 
@@ -81,11 +89,6 @@ class Player(pygame.sprite.Sprite):
         elif key_state[pygame.K_s]:
             self.y += self.speed
             self.rect.centery = self.y
-
-        # Обработка стрельбы игрока.
-        mouse_state = pygame.mouse.get_pressed()
-        if mouse_state[0] and self.health > 0:
-            self.shoot()
 
     def draw_health_bar(self, screen: pygame.Surface) -> None:
         """
@@ -128,16 +131,25 @@ class Player(pygame.sprite.Sprite):
         self.image.set_colorkey(settings.Collors.BLACK.value)
         self.rect = self.image.get_rect(center=old_center)
 
-    def shoot(self) -> None:
+    def shoot(self) -> Optional[Bullet]:
         """Стрельба игрока"""
 
-        # Держим правильную скорость стрельбы игрока.
-        now = pygame.time.get_ticks()
-        if now - self.last_shot > self.shoot_delay:
-            self.last_shot = now
-            x = self.rect.centerx - self.radius * math.sin(math.radians(self.rot))
-            y = self.rect.centery - self.radius * math.cos(math.radians(self.rot))
-            bullet = Bullet(skin=self.bullet_skin, x=x, y=y,
-                            angle=math.radians(self.rot), damage=self.damage)
-            GameObjects().bullets_group.add(bullet)
-            pygame.mixer.Channel(0).play(settings.shoot_sound)
+        # Обработка стрельбы игрока.
+        mouse_state = pygame.mouse.get_pressed()
+        if mouse_state[0] and self.health > 0:
+            # Держим правильную скорость стрельбы игрока.
+            now = pygame.time.get_ticks()
+            if now - self.last_shot > self.shoot_delay:
+                self.last_shot = now
+                x = self.rect.centerx - self.radius * math.sin(math.radians(self.rot))
+                y = self.rect.centery - self.radius * math.cos(math.radians(self.rot))
+                bullet = Bullet(skin=self.bullet_skin,
+                                x=x, y=y,
+                                angle=math.radians(self.rot),
+                                damage=self.damage)
+                return bullet
+
+    def __hash__(self) -> int:
+        # FIXME: Возможно, это стоит исправить. Надо подумать. Сделано на
+        #  скорую руку.
+        return hash(self.__id)

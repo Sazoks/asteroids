@@ -7,9 +7,10 @@ from utils.geometry import (
     Area,
     Point,
 )
+from powerups.active_powerups_manager import ActivePowerupsManager
 
 
-class GameObjects(metaclass=Singleton):
+class GlobalGameObjects(metaclass=Singleton):
     """
     Класс для хранения игровых объектов.
 
@@ -41,6 +42,13 @@ class GameObjects(metaclass=Singleton):
         self.__asteroids_group = pygame.sprite.Group()
         self.__explosions_group = pygame.sprite.Group()
         self.__powerups_group = pygame.sprite.Group()
+
+        # Менджер активных усилений.
+        self.__active_powerups_manager = ActivePowerupsManager()
+
+    @property
+    def active_powerups_manager(self) -> ActivePowerupsManager:
+        return self.__active_powerups_manager
 
     @property
     def quadtree(self) -> Quadtree:
