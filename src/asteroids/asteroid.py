@@ -17,7 +17,7 @@ class Asteroid(pygame.sprite.Sprite):
     __min_radius = 30
     # Минимальное и максимальное кол-во астероидов после деления
     # большего астероида.
-    __min_max_new_asteroids = (2, 4)
+    __min_max_new_asteroids = (2, 3)
 
     def __init__(self,
                  skin: pygame.Surface,
@@ -98,7 +98,8 @@ class Asteroid(pygame.sprite.Sprite):
             self.health = 0
         BAR_LENGTH = 45
         BAR_HEIGHT = 10
-        # Получаем оставшееся здоровье астероида в процентах.
+
+        # Отрисовка полоски здоровья.
         remaining_health_percent = self.health * 100 / self.source_health
         fill = remaining_health_percent * BAR_LENGTH / 100
         outline_rect = pygame.Rect(
@@ -111,6 +112,19 @@ class Asteroid(pygame.sprite.Sprite):
             self.y + self.radius + 5,
             fill, BAR_HEIGHT
         )
+
+        # Отрисовка здоровья астероида цифрами.
+        health_text = settings.health_font.render(
+            f'{self.health}xp',
+            True,
+            settings.Collors.WHITE.value,
+        )
+        settings.screen.blit(
+            health_text,
+            (self.x - BAR_LENGTH // 2 + BAR_LENGTH + 1,
+             self.y + self.radius + 5),
+        )
+
         pygame.draw.rect(screen, settings.Collors.RED.value, fill_rect)
         pygame.draw.rect(screen, settings.Collors.WHITE.value, outline_rect, 2)
 
@@ -121,7 +135,7 @@ class Asteroid(pygame.sprite.Sprite):
         count_new_asteroids = random.randint(*self.__min_max_new_asteroids)
         # Высчитываем новый вес и размеры астероидов.
         new_weight = self.get_weight() // (count_new_asteroids + 2)
-        new_radius = (3 * new_weight / math.pi) ** (1 / 3)
+        new_radius = math.ceil((3 * new_weight / math.pi) ** (1 / 3))
 
         # Формируем список новых астероидов.
         new_small_asteroids: List[Asteroid] = []

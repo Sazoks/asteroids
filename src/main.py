@@ -28,7 +28,7 @@ def main():
     )
 
     # Создаем список уровней.
-    levels = [Level(score=100 * (i + 1)) for i in range(15)]
+    levels = [Level(score=200 * (i + 1)) for i in range(200)]
 
     # Создаем менеджер уровней. Менеджер отвечает за контроль уровня игры
     # и контролирует уровни зарегестрированных в нем игровых объектов по типу
@@ -40,22 +40,22 @@ def main():
     asteroid_types = [
         AsteroidType(
             min_max_radius=(10, 20),
-            min_max_speed=(250, 350),
+            min_max_speed=(380, 480),
             skins=settings.asteroid_skins['tiny'],
         ),
         AsteroidType(
             min_max_radius=(21, 30),
-            min_max_speed=(210, 300),
+            min_max_speed=(340, 430),
             skins=settings.asteroid_skins['small'],
         ),
         AsteroidType(
             min_max_radius=(31, 40),
-            min_max_speed=(150, 230),
+            min_max_speed=(280, 360),
             skins=settings.asteroid_skins['medium'],
         ),
         AsteroidType(
             min_max_radius=(41, 70),
-            min_max_speed=(120, 180),
+            min_max_speed=(250, 310),
             skins=settings.asteroid_skins['large'],
         ),
     ]
@@ -71,7 +71,7 @@ def main():
     # Создаем генератор усилений.
     powerups_generator = PowerupsGenerator(
         start_frequency=10000,
-        max_level=100,
+        max_level=len(levels) * 2,
     )
     levels_manager.register_object(powerups_generator)
 
@@ -79,7 +79,7 @@ def main():
     player = Player(
         skin=settings.player_skin,
         bullet_skin=settings.bullet_skin,
-        health=200, speed=2.5, damage=18,
+        health=200, speed=2.7, damage=22,
         radius=25, shoot_delay=350, score=0,
     )
     game_objects.players_group.add(player)
@@ -168,13 +168,18 @@ def main():
         game_objects.asteroids_group.update()
         player.update()
         game_objects.bullets_group.update()
+
         # Обновляем текст со счетом.
-        score_text = settings.my_font.render(f'Score: {int(player.score)}', True,
-                                             settings.Collors.WHITE.value)
+        score_text = settings.main_font.render(
+            f'Score: {int(player.score)}',
+            True,
+            settings.Collors.WHITE.value,
+        )
         # Обновляем уровень.
-        current_level_text = settings.my_font.render(
+        current_level_text = settings.main_font.render(
             f'Level: {levels_manager.get_current_level()}',
-            True, settings.Collors.WHITE.value,
+            True,
+            settings.Collors.WHITE.value,
         )
 
         # ============================================
@@ -190,16 +195,23 @@ def main():
         game_objects.players_group.draw(settings.screen)
         if player.health > 0:
             player.draw_health_bar(settings.screen)
+
+        # Отрисовка времени действия усилений.
+        game_objects.active_powerups_manager.draw_time_action_powerups()
+
         # Отрисовка всех пуль.
         game_objects.bullets_group.draw(settings.screen)
+
         # Отрисовка астероидов и их здоровья.
         game_objects.asteroids_group.draw(settings.screen)
         for astr in game_objects.asteroids_group:
             astr.draw_health_bar(settings.screen)
+
         # Отрисовка всех взрывов.
         game_objects.explosions_group.draw(settings.screen)
+
         # Отрисовка квадродерева.
-        game_objects.quadtree.draw_quadtree(settings.screen)
+        # game_objects.quadtree.draw_quadtree(settings.screen)
 
         # Отрисовка счета игрока.
         settings.screen.blit(score_text, (10, settings.HEIGHT - 50))

@@ -4,9 +4,11 @@ from abc import (
     ABC,
     abstractmethod,
 )
-from typing import (
-    Optional,
+from enum import (
+    Enum,
+    auto,
 )
+from typing import Optional
 
 import settings
 from player import Player
@@ -17,7 +19,15 @@ class Powerup(pygame.sprite.Sprite, ABC):
     Абстрактный класс усиления для игрока.
     """
 
-    _lifetime = 5000
+    class Status(Enum):
+        """Статусы усиления"""
+
+        ACTIVATED = auto()
+        DEACTIVATED = auto()
+        EXPIRED = auto()
+
+    # Время жизни и время действия усиления.
+    _lifetime = 10000
     _time_action = 5000
 
     def __init__(
@@ -34,7 +44,12 @@ class Powerup(pygame.sprite.Sprite, ABC):
 
         pygame.sprite.Sprite.__init__(self)
 
+        # Начало жизни усиления.
         self._start_time_live = pygame.time.get_ticks()
+        # Время активации усиления.
+        self._activate_time: Optional[int] = None
+        # Статус усиления.
+        self._status = self.Status.DEACTIVATED
 
         # Ширина и высота спрайта усиления, объекты спрайтов.
         self._size = 30
@@ -51,8 +66,6 @@ class Powerup(pygame.sprite.Sprite, ABC):
             settings.HEIGHT - self._size // 2,
         ) if pos_y is None else pos_y
 
-        # Время активации усиления.
-        self._activate_time: Optional[int] = None
 
     @abstractmethod
     def influence(self, player: Player) -> None:
@@ -62,15 +75,14 @@ class Powerup(pygame.sprite.Sprite, ABC):
     def rollback_param(self, player: Player) -> None:
         pass
 
-    def activate(self) -> None:
-        """Активация усиления"""
+    @abstractmethod
+    def get_time_action_color(self) -> settings.Collors:
+        pass
+
+    def refresh(self) -> None:
+        """Обновление времени действия усиления"""
 
         self._activate_time = pygame.time.get_ticks()
-
-    def activated(self) -> bool:
-        """Статус усиления"""
-
-        return self._activate_time is not None
 
     def get_activate_time(self) -> Optional[int]:
         return self._activate_time
@@ -83,6 +95,15 @@ class Powerup(pygame.sprite.Sprite, ABC):
     def get_time_action(cls) -> int:
         return cls._time_action
 
+    @property
+    def status(self) -> Status:
+        return self._status
+
+    @status.setter
+    def status(self, new_status: Status) -> None:
+        self._status = new_status
+
+
     def update(self) -> None:
         """Метод обновления состояния усиления"""
 
@@ -90,4 +111,5 @@ class Powerup(pygame.sprite.Sprite, ABC):
         if now - self._start_time_live >= self.get_lifetime():
             self.kill()
         else:
+            # FIXME: Убрать.
             ...

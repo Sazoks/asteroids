@@ -101,19 +101,33 @@ class Player(pygame.sprite.Sprite):
             self.health = 0
         BAR_LENGTH = 60
         BAR_HEIGHT = 10
+
         # Получаем оставшееся здоровье игрока в процентах.
         remaining_health_percent = self.health * 100 / self.source_health
         fill = remaining_health_percent * BAR_LENGTH / 100
         outline_rect = pygame.Rect(
             self.x - BAR_LENGTH // 2,
             self.y + self.radius + 5,
-            BAR_LENGTH, BAR_HEIGHT
+            BAR_LENGTH, BAR_HEIGHT,
         )
         fill_rect = pygame.Rect(
             self.x - BAR_LENGTH // 2,
             self.y + self.radius + 5,
-            fill, BAR_HEIGHT
+            fill, BAR_HEIGHT,
         )
+
+        # Отрисовка здоровья игрока цифрами.
+        health_text = settings.health_font.render(
+            f'{self.health}xp',
+            True,
+            settings.Collors.WHITE.value,
+        )
+        settings.screen.blit(
+            health_text,
+            (self.x - BAR_LENGTH // 2 + BAR_LENGTH + 1,
+             self.y + self.radius),
+        )
+
         pygame.draw.rect(screen, settings.Collors.GREEN.value, fill_rect)
         pygame.draw.rect(screen, settings.Collors.WHITE.value, outline_rect, 2)
 

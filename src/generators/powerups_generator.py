@@ -1,9 +1,6 @@
 import pygame
 import random
-from typing import (
-    List,
-    Optional,
-)
+from typing import Optional
 
 from levels.abstract_managing_levels import ManagingLevels
 from powerups import (

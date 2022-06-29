@@ -27,22 +27,31 @@ class SpeedPowerup(Powerup):
         self.__prev_value: Optional[int] = None
 
     def influence(self, player: Player) -> None:
-        """
-        Эффект на игрока.
+        """Воздействие усиления на игрока"""
 
-        :param player: Объект игрока.
-        """
-
-        self.__prev_value = player.speed
-        player.speed = self.__speed
+        # Если воздействия прежде не было, сохраняем исходное значение и
+        # меняем статус усиления.
+        if self._status == self.Status.DEACTIVATED:
+            self.__prev_value = player.speed
+            self._activate_time = pygame.time.get_ticks()
+            self._status = self.Status.ACTIVATED
+            player.speed = self.__speed
 
     def rollback_param(self, player: Player) -> None:
-        """
-        Возврат предыдущего значения парметра у игрока.
-
-        :param player: Объект игрока.
-        """
+        """Возврат предыдущего значения параметра у игрока"""
 
         if self.__prev_value is not None:
             player.speed = self.__prev_value
             self.__prev_value = None
+            self._activate_time = None
+            self._status = self.Status.DEACTIVATED
+
+    def get_time_action_color(self) -> settings.Collors:
+        """
+        Получение цвета усиления для отрисовки времени действия.
+
+        :return: Цвет.
+        """
+
+        return settings.Collors.BLUE
+

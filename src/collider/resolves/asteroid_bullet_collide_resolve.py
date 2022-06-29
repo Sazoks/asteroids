@@ -58,7 +58,8 @@ class AsteroidBulletCollideResolve(AbstractCollideResolve):
 
                 # Начисляем игроку очки.
                 if len(game_objects.players_group.sprites()) > 0:
-                    game_objects.players_group.sprites()[0].score += self.__asteroid.reward
+                    game_objects.players_group.sprites()[0].score \
+                        += self.__asteroid.reward
 
                 # Разбиваем астероид на два меньших.
                 if self.__asteroid.radius >= self.__asteroid.get_min_size():

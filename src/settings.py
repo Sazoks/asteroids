@@ -41,7 +41,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Asteroids")
 clock = pygame.time.Clock()
 pygame.font.init()
-my_font = pygame.font.SysFont('Comic Sans MS', 30)
+main_font = pygame.font.SysFont('Comic Sans MS', 30)
+health_font = pygame.font.SysFont('Comic Sans MS', 12)
 
 
 # Загружаем спрайты.
