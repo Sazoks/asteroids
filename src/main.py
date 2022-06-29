@@ -28,7 +28,7 @@ def main():
     )
 
     # Создаем список уровней.
-    levels = [Level(score=200 * (i + 1)) for i in range(200)]
+    levels = [Level(score=200 * (i + 1)) for i in range(100)]
 
     # Создаем менеджер уровней. Менеджер отвечает за контроль уровня игры
     # и контролирует уровни зарегестрированных в нем игровых объектов по типу
@@ -71,7 +71,7 @@ def main():
     # Создаем генератор усилений.
     powerups_generator = PowerupsGenerator(
         start_frequency=10000,
-        max_level=len(levels) * 2,
+        max_level=len(levels),
     )
     levels_manager.register_object(powerups_generator)
 
@@ -80,7 +80,7 @@ def main():
         skin=settings.player_skin,
         bullet_skin=settings.bullet_skin,
         health=200, speed=2.7, damage=22,
-        radius=25, shoot_delay=350, score=0,
+        radius=25, shoot_delay=350, score=10000,
     )
     game_objects.players_group.add(player)
     # Регистрируем игрока в менджере активных усилений.
