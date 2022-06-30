@@ -97,24 +97,12 @@ def main():
             # Проверка события закрытия игры.
             if event.type == pygame.QUIT:
                 running = False
-            # Обработка стельбы игрока.
-            if player.health > 0 and event.type == pygame.MOUSEBUTTONDOWN \
-                    and event.button == 1:
-                # FIXME: Убрать.
-                # print('123')
-                # new_bullet = player.shoot()
-                # if new_bullet is not None:
-                #     GlobalGameObjects().bullets_group.add(new_bullet)
-                #     pygame.mixer.Channel(0).play(settings.shoot_sound)
-                ...
 
         # ============================================
         # Проверяем, нужно ли повышать уровень игры.
         if levels_manager.level_complete(player.score):
             levels_manager.level_up()
 
-        # FIXME: Циклический импорт... Менджер активных усилений не может
-        #  находится в GlobalGameObjects.
         # Контролируем работу активных усилений на игрока.
         game_objects.active_powerups_manager.control_powerups()
 
