@@ -35,11 +35,11 @@ class HealthPowerup(Powerup):
         """
 
         self._activate_time = pygame.time.get_ticks()
-        lost_health = player.source_health - player.health
+        lost_health = player.get_source_health() - player.health
         if self.__add_health <= lost_health:
             player.health += self.__add_health
         else:
-            player.health = player.source_health
+            player.health = player.get_source_health()
 
     def rollback_param(self, player: Player) -> None:
         pass

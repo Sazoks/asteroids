@@ -12,7 +12,7 @@ FPS = 60
 
 
 class Collors(Enum):
-    """Цвета для игры RGB формате"""
+    """Цвета для игры"""
 
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
@@ -23,8 +23,8 @@ class Collors(Enum):
 
 
 # Пути папок до медиа файлов.
-# Проверка необходима, если программа запускается из
-# скомпилированного .exe-файла.
+# Проверка необходима, если программа запускается из скомпилированного
+# .exe-файла.
 if getattr(sys, 'frozen', False):
     base_dir = Path(sys.executable).parent
 else:
@@ -94,6 +94,6 @@ chunky_expl = pygame.mixer.Sound(audio_dir / f'expls/chunky_expl.mp3')
 chunky_expl.set_volume(0.5)
 
 # Загрузка музыки.
-pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
-pygame.mixer.music.set_volume(0.05)
-pygame.mixer.music.play(-1)
+# pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
+# pygame.mixer.music.set_volume(0.05)
+# pygame.mixer.music.play(-1)

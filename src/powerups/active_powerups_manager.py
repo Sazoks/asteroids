@@ -117,17 +117,17 @@ class ActivePowerupsManager:
                     remaining_time_action_percent = \
                         remaining_time_action * 100 / source_time_action
 
-                    # При отрисовке домножаем координату по Y на порядковый номер
-                    # усиления, чтобы они рисовались друг под другом.
+                    # При отрисовке домножаем координату по Y на порядковый
+                    # номер усиления, чтобы они рисовались друг под другом.
                     fill = remaining_time_action_percent * BAR_LENGTH / 100
                     outline_rect = pygame.Rect(
-                        player.x - BAR_LENGTH // 2,
-                        player.y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
+                        player.pos_x - BAR_LENGTH // 2,
+                        player.pos_y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
                         BAR_LENGTH, BAR_HEIGHT
                     )
                     fill_rect = pygame.Rect(
-                        player.x - BAR_LENGTH // 2,
-                        player.y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
+                        player.pos_x - BAR_LENGTH // 2,
+                        player.pos_y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
                         fill, BAR_HEIGHT
                     )
 
