@@ -45,11 +45,11 @@ class AsteroidBulletCollideResolve(AbstractCollideResolve):
             self.__bullet.kill()
             game_objects.quadtree.remove(self.__bullet)
 
-            self.__asteroid.health -= self.__bullet.damage
+            self.__asteroid.health -= self.__bullet.get_damage()
 
             # Анимация взрыва при попадании в астероид.
             random.choice(settings.expl_sounds).play()
-            exp = Explosion(self.__bullet.rect.center, self.__bullet.height)
+            exp = Explosion(self.__bullet.rect.center, self.__bullet.get_height())
             game_objects.explosions_group.add(exp)
 
             if self.__asteroid.health <= 0:

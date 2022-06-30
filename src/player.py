@@ -159,10 +159,13 @@ class Player(pygame.sprite.Sprite):
                 self.__last_shot = now
                 x = self.rect.centerx - self.radius * math.sin(math.radians(self.rot))
                 y = self.rect.centery - self.radius * math.cos(math.radians(self.rot))
-                bullet = Bullet(skin=self.__bullet_skin,
-                                x=x, y=y,
-                                angle=math.radians(self.rot),
-                                damage=self.__damage)
+                bullet = Bullet(
+                    skin=self.__bullet_skin,
+                    pos_x=x,
+                    pos_y=y,
+                    angle=math.radians(self.rot),
+                    damage=self.__damage,
+                )
                 return bullet
 
     @property

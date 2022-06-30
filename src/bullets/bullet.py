@@ -7,24 +7,40 @@ import settings
 class Bullet(pygame.sprite.Sprite):
     """Класс снаряда игркоа"""
 
-    def __init__(self,
-                 skin: pygame.Surface, x: int, y: int,
-                 angle: float, damage: float) -> None:
+    def __init__(
+            self,
+            skin: pygame.Surface,
+            pos_x: int,
+            pos_y: int,
+            angle: float,
+            damage: int,
+    ) -> None:
+        """
+        Инициализатор класса.
+
+        :param skin: Изображение спрайта.
+        :param pos_x: Позиция по оси Х.
+        :param pos_y: Позиция по оси Y.
+        :param damage: Урон снаряда.
+        """
+
         pygame.sprite.Sprite.__init__(self)
 
-        self.width = 15
-        self.height = 70
-        self.image_orig = pygame.transform.scale(skin, (self.width, self.height))
+        self.__width = 15
+        self.__height = 70
+        self.image_orig = pygame.transform.scale(
+            skin, (self.__width, self.__height),
+        )
         self.image_orig.set_colorkey(settings.Collors.BLACK.value)
         self.image = self.image_orig.copy()
 
         self.rect = self.image.get_rect()
-        self.rect.centery = y
-        self.rect.centerx = x
+        self.rect.centery = pos_y
+        self.rect.centerx = pos_x
 
-        self.damage = damage
+        self.__damage = damage
         self.angle = angle
-        self.speed = 18
+        self.__speed = 18
         self.rot = 0
 
         # Поворачиваем снаряд в нужную сторону.
@@ -37,8 +53,8 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
         # Меняем положение объектов в пространстве.
-        self.rect.centerx -= math.sin(self.angle) * self.speed
-        self.rect.centery -= math.cos(self.angle) * self.speed
+        self.rect.centerx -= math.sin(self.angle) * self.__speed
+        self.rect.centery -= math.cos(self.angle) * self.__speed
 
     def rotate(self, new_rot: float) -> None:
         self.rot = new_rot
@@ -47,3 +63,15 @@ class Bullet(pygame.sprite.Sprite):
         self.image = new_image
         self.image.set_colorkey(settings.Collors.BLACK.value)
         self.rect = self.image.get_rect(center=old_center)
+
+    def get_damage(self) -> int:
+        return self.__damage
+
+    def get_speed(self) -> float:
+        return self.__speed
+
+    def get_height(self) -> int:
+        return self.__height
+
+    def get_width(self) -> int:
+        return self.__width
