@@ -12,9 +12,10 @@ from typing import Optional
 
 import settings
 from player import Player
+from collider.collideable import Collideable
 
 
-class Powerup(pygame.sprite.Sprite, ABC):
+class Powerup(Collideable, pygame.sprite.Sprite, ABC):
     """
     Абстрактный класс усиления для игрока.
     """

@@ -33,24 +33,24 @@ class ActivePowerupsManager:
 
         now = pygame.time.get_ticks()
         for player, powerups in self.__managed_powerups.items():
-            for powerup in powerups.values():
-                # Если прошедшее время с момента активации усиления не
-                # превышает времени действия усиления, продолжаем усиливать
-                # игрока. Иначе возвращаем парметр игрока и удаляем усиление
-                # из словаря активных усилений текущего игрока.
-                if now - powerup.get_activate_time() > powerup.get_time_action():
-                    powerup.rollback_param(player)
-                    powerup.status = Powerup.Status.EXPIRED
+            # Обрабатываем только активных игроков.
+            if player.status == Player.Status.ACTIVATED:
+                for powerup in powerups.values():
+                    # Если прошедшее время с момента активации усиления не
+                    # превышает времени действия усиления, продолжаем усиливать
+                    # игрока. Иначе возвращаем парметр игрока и удаляем усиление
+                    # из словаря активных усилений текущего игрока.
+                    if now - powerup.get_activate_time() > powerup.get_time_action():
+                        powerup.rollback_param(player)
+                        powerup.status = Powerup.Status.EXPIRED
 
-            # Обновляем усиления, действующие на игрока, выбирая только не
-            # истекшие.
-            # FIXME: Возможно, есть лучшее решение для массового удаления
-            #  элементов из словаря.
-            self.__managed_powerups[player] = {
-                type_powerup: powerup
-                for type_powerup, powerup in self.__managed_powerups[player].items()
-                if powerup.status == Powerup.Status.ACTIVATED
-            }
+                # Обновляем усиления, действующие на игрока, выбирая только не
+                # истекшие.
+                self.__managed_powerups[player] = {
+                    type_powerup: powerup
+                    for type_powerup, powerup in self.__managed_powerups[player].items()
+                    if powerup.status == Powerup.Status.ACTIVATED
+                }
 
     def register_player(self, player: Player) -> None:
         """
@@ -59,7 +59,8 @@ class ActivePowerupsManager:
         :param player: Объект игрока.
         """
 
-        if player not in self.__managed_powerups.keys():
+        if player.status == Player.Status.ACTIVATED \
+                and player not in self.__managed_powerups.keys():
             self.__managed_powerups[player] = {}
 
     def unregister_player(self, player: Player) -> None:
@@ -100,44 +101,45 @@ class ActivePowerupsManager:
         """
 
         for player, powerups in self.__managed_powerups.items():
-            for i, powerup in enumerate(powerups.values()):
-                if powerup.status == Powerup.Status.ACTIVATED:
-                    # Размеры полоски.
-                    BAR_LENGTH = 60
-                    BAR_HEIGHT = 10
+            if player.status == Player.Status.ACTIVATED:
+                for i, powerup in enumerate(powerups.values()):
+                    if powerup.status == Powerup.Status.ACTIVATED:
+                        # Размеры полоски.
+                        BAR_LENGTH = 60
+                        BAR_HEIGHT = 10
 
-                    # Максимальное время действия.
-                    source_time_action = powerup.get_time_action()
-                    # Оставшееся время действия.
-                    remaining_time_action = \
-                        source_time_action - (pygame.time.get_ticks()
-                                              - powerup.get_activate_time())
+                        # Максимальное время действия.
+                        source_time_action = powerup.get_time_action()
+                        # Оставшееся время действия.
+                        remaining_time_action = \
+                            source_time_action - (pygame.time.get_ticks()
+                                                  - powerup.get_activate_time())
 
-                    # Оставшееся время действия в процентах.
-                    remaining_time_action_percent = \
-                        remaining_time_action * 100 / source_time_action
+                        # Оставшееся время действия в процентах.
+                        remaining_time_action_percent = \
+                            remaining_time_action * 100 / source_time_action
 
-                    # При отрисовке домножаем координату по Y на порядковый
-                    # номер усиления, чтобы они рисовались друг под другом.
-                    fill = remaining_time_action_percent * BAR_LENGTH / 100
-                    outline_rect = pygame.Rect(
-                        player.pos_x - BAR_LENGTH // 2,
-                        player.pos_y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
-                        BAR_LENGTH, BAR_HEIGHT
-                    )
-                    fill_rect = pygame.Rect(
-                        player.pos_x - BAR_LENGTH // 2,
-                        player.pos_y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
-                        fill, BAR_HEIGHT
-                    )
+                        # При отрисовке домножаем координату по Y на порядковый
+                        # номер усиления, чтобы они рисовались друг под другом.
+                        fill = remaining_time_action_percent * BAR_LENGTH / 100
+                        outline_rect = pygame.Rect(
+                            player.pos_x - BAR_LENGTH // 2,
+                            player.pos_y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
+                            BAR_LENGTH, BAR_HEIGHT
+                        )
+                        fill_rect = pygame.Rect(
+                            player.pos_x - BAR_LENGTH // 2,
+                            player.pos_y + player.radius + 5 + (i + 1) * BAR_HEIGHT,
+                            fill, BAR_HEIGHT
+                        )
 
-                    pygame.draw.rect(
-                        settings.screen,
-                        powerup.get_time_action_color().value,
-                        fill_rect,
-                    )
-                    pygame.draw.rect(
-                        settings.screen,
-                        settings.Collors.WHITE.value,
-                        outline_rect, 2,
-                    )
+                        pygame.draw.rect(
+                            settings.screen,
+                            powerup.get_time_action_color().value,
+                            fill_rect,
+                        )
+                        pygame.draw.rect(
+                            settings.screen,
+                            settings.Collors.WHITE.value,
+                            outline_rect, 2,
+                        )

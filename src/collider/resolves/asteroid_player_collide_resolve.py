@@ -41,11 +41,14 @@ class AsteroidPlayerCollideResolve(AbstractCollideResolve):
         if pygame.sprite.collide_circle(self.__player, self.__asteroid):
             game_objects = GlobalGameObjects()
 
+            # Отнимаем жизни игрока.
             self.__player.health -= self.__asteroid.radius
             if self.__player.health <= 0:
                 self.__player.health = 0
+                self.__player.status = Player.Status.DEACTIVATED
                 self.__player.kill()
                 game_objects.quadtree.remove(self.__player)
+                game_objects.active_powerups_manager.unregister_player(self.__player)
 
                 # Создаем анимацию взрыва на месте игрока.
                 settings.chunky_expl.play()

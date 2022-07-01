@@ -8,16 +8,17 @@ from typing import (
 )
 
 import settings
+from collider.collideable import Collideable
 
 
-class Asteroid(pygame.sprite.Sprite):
+class Asteroid(Collideable, pygame.sprite.Sprite):
     """Класс астероидов"""
 
     # Значение в px, при котором астероид не должен делиться.
     __min_radius = 30
     # Минимальное и максимальное кол-во астероидов после деления
     # большего астероида.
-    __min_max_new_asteroids = (2, 3)
+    __min_max_new_asteroids = (2, 4)
 
     def __init__(
             self,

@@ -28,7 +28,7 @@ def main():
     )
 
     # Создаем список уровней.
-    levels = [Level(score=200 * (i + 1)) for i in range(100)]
+    levels = [Level(score=100 * (i + 1)) for i in range(100)]
 
     # Создаем менеджер уровней. Менеджер отвечает за контроль уровня игры
     # и контролирует уровни зарегестрированных в нем игровых объектов по типу
@@ -62,6 +62,7 @@ def main():
     # Создаем генератор астероидов.
     asteroid_generator = AsteroidsGenerator(
         start_frequency=2500,
+        end_frequency=150,
         asteroid_types=asteroid_types,
         max_level=len(levels),
     )
@@ -71,6 +72,7 @@ def main():
     # Создаем генератор усилений.
     powerups_generator = PowerupsGenerator(
         start_frequency=10000,
+        end_frequency=4000,
         max_level=len(levels),
     )
     levels_manager.register_object(powerups_generator)
@@ -80,7 +82,7 @@ def main():
         skin=settings.player_skin,
         bullet_skin=settings.bullet_skin,
         health=200, speed=2.7, damage=22,
-        radius=25, shoot_delay=420, score=10000,
+        radius=25, shoot_delay=420, score=0,
     )
     game_objects.players_group.add(player)
     # Регистрируем игрока в менджере активных усилений.
@@ -99,6 +101,7 @@ def main():
                 running = False
 
         # ============================================
+        # Обновление.
         # Проверяем, нужно ли повышать уровень игры.
         if levels_manager.level_complete(player.score):
             levels_manager.level_up()
@@ -122,7 +125,6 @@ def main():
             pygame.mixer.Channel(0).play(settings.shoot_sound)
             game_objects.bullets_group.add(new_player_bullet)
 
-        # Обновление.
         # Добавляем в квадродерево астероиды.
         # FIXME:
         #  Сделать удаление объектов из квадродерева вместо полного отчищения.
@@ -199,7 +201,7 @@ def main():
         game_objects.explosions_group.draw(settings.screen)
 
         # Отрисовка квадродерева.
-        # game_objects.quadtree.draw_quadtree(settings.screen)
+        game_objects.quadtree.draw_quadtree(settings.screen)
 
         # Отрисовка счета игрока.
         settings.screen.blit(score_text, (10, settings.HEIGHT - 50))

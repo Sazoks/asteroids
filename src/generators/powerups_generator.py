@@ -22,7 +22,12 @@ class PowerupsGenerator(ManagingLevels):
         HealthPowerup,
     ]
 
-    def __init__(self, start_frequency: float, max_level: int) -> None:
+    def __init__(
+            self,
+            start_frequency: float,
+            end_frequency: float,
+            max_level: int,
+    ) -> None:
         """
         Инициализатор класса.
 
@@ -37,6 +42,7 @@ class PowerupsGenerator(ManagingLevels):
         self.__current_level = 0
 
         self.__start_frequency = start_frequency
+        self.__end_frequency = end_frequency
         self.__current_frequency = start_frequency
         self.__frequency_delta = start_frequency // max_level
 
@@ -56,18 +62,24 @@ class PowerupsGenerator(ManagingLevels):
     def level_up(self) -> None:
         """Повышение уровня"""
 
-        if self.__current_level < self.__max_level - 1:
+        if self.__current_level < self.__max_level:
             self.__current_level += 1
             if self.__current_frequency - self.__frequency_delta \
-                    >= self.__frequency_delta:
+                    >= self.__end_frequency:
                 self.__current_frequency -= self.__frequency_delta
+            else:
+                self.__current_frequency = self.__end_frequency
 
     def level_down(self) -> None:
         """Понижение уровня"""
 
         if self.__current_level > self.__start_level:
             self.__current_level -= 1
-            self.__current_frequency += self.__frequency_delta
+            if self.__current_frequency + self.__frequency_delta \
+                    <= self.__start_frequency:
+                self.__current_frequency += self.__frequency_delta
+            else:
+                self.__current_frequency = self.__start_frequency
 
     def reset_levels(self) -> None:
         """Сброс уровней"""

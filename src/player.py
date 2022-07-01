@@ -1,13 +1,24 @@
 import pygame
 import math
 from typing import Optional
+from enum import (
+    Enum,
+    auto,
+)
 
 import settings
 from bullets.bullet import Bullet
+from collider.collideable import Collideable
 
 
-class Player(pygame.sprite.Sprite):
+class Player(Collideable, pygame.sprite.Sprite):
     """Класс игрока"""
+
+    class Status(Enum):
+        """Состояние игрока"""
+
+        ACTIVATED = auto()
+        DEACTIVATED = auto()
 
     def __init__(
             self,
@@ -34,6 +45,8 @@ class Player(pygame.sprite.Sprite):
         """
 
         pygame.sprite.Sprite.__init__(self)
+
+        self.__status = self.Status.ACTIVATED
 
         self.__bullet_skin = bullet_skin
 
@@ -167,6 +180,14 @@ class Player(pygame.sprite.Sprite):
                     damage=self.__damage,
                 )
                 return bullet
+
+    @property
+    def status(self) -> Status:
+        return self.__status
+
+    @status.setter
+    def status(self, new_status: Status) -> None:
+        self.__status = new_status
 
     @property
     def pos_x(self) -> int:

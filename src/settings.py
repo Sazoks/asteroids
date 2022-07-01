@@ -94,6 +94,6 @@ chunky_expl = pygame.mixer.Sound(audio_dir / f'expls/chunky_expl.mp3')
 chunky_expl.set_volume(0.5)
 
 # Загрузка музыки.
-# pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
-# pygame.mixer.music.set_volume(0.05)
-# pygame.mixer.music.play(-1)
+pygame.mixer.music.load(audio_dir / 'music/acdc_thunderstruck.mp3')
+pygame.mixer.music.set_volume(0.05)
+pygame.mixer.music.play(-1)
