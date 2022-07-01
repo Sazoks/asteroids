@@ -80,7 +80,7 @@ def main():
         skin=settings.player_skin,
         bullet_skin=settings.bullet_skin,
         health=200, speed=2.7, damage=22,
-        radius=25, shoot_delay=350, score=10000,
+        radius=25, shoot_delay=420, score=10000,
     )
     game_objects.players_group.add(player)
     # Регистрируем игрока в менджере активных усилений.
