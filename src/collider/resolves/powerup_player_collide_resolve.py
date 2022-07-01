@@ -1,4 +1,5 @@
 import pygame
+from typing import Tuple
 
 from player import Player
 from powerups import Powerup
@@ -21,13 +22,13 @@ class PowerupPlayerCollideResolve(AbstractCollideResolve):
         self.__player = player
 
     @staticmethod
-    def get_object_types() -> tuple:
+    def get_object_types() -> Tuple[object, object]:
         """
-        Геттер для получения имен классов объектов, столкновения
+        Геттер для получения классов объектов, столкновения
         которых может решать этот резолвер.
 
         :return:
-            Кортеж имен классов объектов, которые могут сталкиваться.
+            Кортеж классов объектов, которые могут сталкиваться.
         """
 
         return Powerup, Player
@@ -38,7 +39,6 @@ class PowerupPlayerCollideResolve(AbstractCollideResolve):
         if pygame.sprite.collide_mask(self.__player, self.__powerup):
             self.__powerup.kill()
             GlobalGameObjects().quadtree.remove(self.__powerup)
-
             GlobalGameObjects().active_powerups_manager.add_powerup(
                 player=self.__player,
                 new_powerup=self.__powerup,

@@ -1,4 +1,5 @@
 import math
+from typing import Tuple
 
 from asteroids.asteroid import Asteroid
 from .abstract_collide_resolve import AbstractCollideResolve
@@ -19,13 +20,13 @@ class AsteroidCollideResolve(AbstractCollideResolve):
         self.__asteroid_2 = asteroid_2
 
     @staticmethod
-    def get_object_types() -> tuple:
+    def get_object_types() -> Tuple[object, object]:
         """
-        Геттер для получения имен классов объектов, столкновения
+        Геттер для получения классов объектов, столкновения
         которых может решать этот резолвер.
 
         :return:
-            Кортеж имен классов объектов, которые могут сталкиваться.
+            Кортеж классов объектов, которые могут сталкиваться.
         """
 
         return Asteroid, Asteroid

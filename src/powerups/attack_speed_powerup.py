@@ -1,3 +1,5 @@
+"""Модуль усилений скорости атаки"""
+
 import pygame
 from typing import Optional
 
@@ -8,7 +10,7 @@ from .abstract_powerup import Powerup
 
 class AttackSpeedPowerup(Powerup):
     """
-    Класс усиления скорострельности игрока.
+    Класс усиления скорострельности и урона игрока.
     """
 
     __attack_speed = 100
@@ -31,7 +33,11 @@ class AttackSpeedPowerup(Powerup):
         self.__prev_damage: Optional[int] = None
 
     def influence(self, player: Player) -> None:
-        """Воздействие усиления на игрока"""
+        """
+        Воздействие усиления на игрока.
+
+        :param player: Объект игрока, на которого оказывается эффект.
+        """
 
         # Если воздействия прежде не было, сохраняем исходное значение и
         # меняем статус усиления.
@@ -44,7 +50,11 @@ class AttackSpeedPowerup(Powerup):
             player.damage = self.__damage
 
     def rollback_param(self, player: Player) -> None:
-        """Возврат предыдущего значения параметра у игрока"""
+        """
+        Возврат предыдущего значения параметра у игрока.
+
+        :param player: Объект игрока, у которого нужно вернуть параметры.
+        """
 
         if self.__prev_attack_speed is not None \
                 and self.__prev_damage is not None:

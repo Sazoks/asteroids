@@ -1,3 +1,5 @@
+"""Модуль класса игрока"""
+
 import pygame
 import math
 from typing import Optional

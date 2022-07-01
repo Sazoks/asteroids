@@ -1,3 +1,5 @@
+"""Модуль с классами для работы с астероидами"""
+
 import random
 import pygame
 import math
@@ -63,7 +65,11 @@ class Asteroid(Collideable, pygame.sprite.Sprite):
         self.__reward = size
 
     def get_weight(self) -> float:
-        """Масса объекта равна объему шара"""
+        """
+        Масса объекта равна объему шара.
+
+        :return: Дробное число, масса астероида.
+        """
 
         return math.pi * (self.radius ** 3) / 3
 
@@ -72,6 +78,8 @@ class Asteroid(Collideable, pygame.sprite.Sprite):
         """
         Геттер для получения минимального значения,
         при котором астероид делиться не будет.
+
+        :return: Целое число, минимальный радиус.
         """
 
         return cls.__min_radius
@@ -135,7 +143,11 @@ class Asteroid(Collideable, pygame.sprite.Sprite):
         pygame.draw.rect(screen, settings.Collors.WHITE.value, outline_rect, 2)
 
     def split_asteroid(self) -> List['Asteroid']:
-        """Метод разбиения астероида на два меньших"""
+        """
+        Метод разбиения астероида на два меньших.
+
+        :return: Список объектов с меньшими астероидами.
+        """
 
         # Выбираем случайное кол-во астероидов.
         count_new_asteroids = random.randint(*self.__min_max_new_asteroids)
@@ -163,43 +175,109 @@ class Asteroid(Collideable, pygame.sprite.Sprite):
 
     @property
     def pos_x(self) -> int:
+        """
+        Геттер координаты по оси Х.
+
+        :return: Целое число, координата по оси Х.
+        """
+
         return self.__pos_x
 
     @pos_x.setter
     def pos_x(self, new_pos_x: int) -> None:
+        """
+        Сеттер координаты по оси Х.
+
+        :param new_pos_x: Новое значение по оси Х.
+        """
+
         self.__pos_x = new_pos_x
 
     @property
     def pos_y(self) -> int:
+        """
+        Геттер координаты по оси Y.
+
+        :return: Целое число, координата по оси Y.
+        """
+
         return self.__pos_y
 
     @pos_y.setter
     def pos_y(self, new_pos_y: int) -> None:
+        """
+        Сеттер координаты по оси Y.
+
+        :param new_pos_y: Новое значение координаты по оси Y.
+        """
+
         self.__pos_y = new_pos_y
 
     @property
     def speed(self) -> float:
+        """
+        Геттер скорости.
+
+        :return: Вещественное число, скорость астероида.
+        """
+
         return self.__speed
 
     @speed.setter
     def speed(self, new_speed: float) -> None:
+        """
+        Сеттер скорости астероида.
+
+        :param new_speed: Новая скорость астероида.
+        """
+
         self.__speed = new_speed
 
     @property
     def health(self) -> int:
+        """
+        Геттер здоровья астероида.
+
+        :return: Целое число, здоровье астероида.
+        """
+
         return self.__health
 
     @health.setter
     def health(self, new_health: float) -> None:
+        """
+        Сеттер здоровья астероида.
+
+        :param new_health: Новое здоровье астероида.
+        """
+
         self.__health = new_health
 
     def get_source_health(self) -> int:
+        """
+        Геттер получения исходного здоровья астероида.
+
+        :return: Целое число, исходное здоровье астероида.
+        """
+
         return self.__source_health
 
     def get_reward(self) -> int:
+        """
+        Геттер награды за уничтожение астероида.
+
+        :return: Целое число, награда за уничтожение астероида.
+        """
+
         return self.__reward
 
     def __repr__(self) -> str:
+        """
+        Дандер-метод для получения информации об объекте в виде строки.
+
+        :return: Объект строки с информацией об объекте.
+        """
+
         return f'Asteroid(x={self.rect.centerx}, y={self.rect.centery})'
 
 

@@ -1,3 +1,5 @@
+"""Модуль интерфейса абстрактной фабрики"""
+
 from abc import (
     ABC,
     abstractmethod,

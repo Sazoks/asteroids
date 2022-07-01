@@ -1,3 +1,5 @@
+"""Модуль интерфейса управления уровнями"""
+
 from abc import (
     ABC,
     abstractmethod,

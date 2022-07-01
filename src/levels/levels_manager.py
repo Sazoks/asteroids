@@ -1,3 +1,5 @@
+"""Модуль менеджера уровней"""
+
 from typing import (
     List,
     Iterable,
@@ -18,8 +20,11 @@ class LevelsManager(ManagingLevels):
     другие менеджеры уровней.
     """
 
-    def __init__(self, levels: List[Level],
-                 managed_objects: Optional[Iterable[ManagingLevels]] = None) -> None:
+    def __init__(
+            self,
+            levels: List[Level],
+            managed_objects: Optional[Iterable[ManagingLevels]] = None,
+    ) -> None:
         """
         Инициализатор класса.
 
@@ -42,14 +47,25 @@ class LevelsManager(ManagingLevels):
             self.__managed_objects \
                 = self._create_dict_managed_objects(managed_objects)
 
-
         self.__levels = self._validate_levels(levels)
         self.__level_cursor = 0
 
     def get_levels(self) -> List[Level]:
+        """
+        Геттер получения списка уровней.
+
+        :return: Список уровней.
+        """
+
         return self.__levels
 
     def get_managed_objects(self) -> Dict[int, ManagingLevels]:
+        """
+        Геттер получения словаря управляемых объектов.
+
+        :return: Словарь управляемых объектов.
+        """
+
         return self.__managed_objects
 
     def level_complete(self, score: int) -> bool:
@@ -64,6 +80,12 @@ class LevelsManager(ManagingLevels):
         return score >= self.__levels[self.__level_cursor].score
 
     def get_current_level(self) -> int:
+        """
+        Геттер получения текущего уровня.
+
+        :return: Целое число, текущий уровень.
+        """
+
         return self.__level_cursor
 
     def level_up(self) -> None:
@@ -151,7 +173,11 @@ class LevelsManager(ManagingLevels):
             self.__managed_objects.pop(object_id)
 
     def __repr__(self) -> str:
-        """Информация об объекте в читаемом виде"""
+        """
+        Информация об объекте в читаемом виде.
+
+        :return: Объект строки с информацией об объекте.
+        """
 
         return f'count levels: {len(self.__levels)}\n' \
                f'levels: {self.__levels}\n' \

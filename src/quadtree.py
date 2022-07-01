@@ -1,3 +1,5 @@
+"""Модуль для работы с квадродеревом"""
+
 import pygame
 from typing import (
     Optional,
@@ -22,10 +24,13 @@ class Quadtree:
     class QuadtreeNode:
         """Узел квадродерева"""
 
-        def __init__(self, area: Area,
-                     quadtree: 'Quadtree',
-                     search_accuracy: int = 10,
-                     parent: Optional['Quadtree.QuadtreeNode'] = None) -> None:
+        def __init__(
+                self,
+                area: Area,
+                quadtree: 'Quadtree',
+                search_accuracy: int = 10,
+                parent: Optional['Quadtree.QuadtreeNode'] = None,
+        ) -> None:
             """
             Инициализатор класса.
 
@@ -46,9 +51,21 @@ class Quadtree:
             self.__nodes: List['Quadtree.QuadtreeNode'] = []
 
         def get_parent(self) -> Optional['Quadtree.QuadtreeNode']:
+            """
+            Геттер для получения родительского узла.
+
+            :return: Объект родительского узла квадродерева.
+            """
+
             return self.__parent
 
         def get_section(self) -> Area:
+            """
+            Геттер для получения объекта секции.
+
+            :return: Объект секции узла квадродерева.
+            """
+
             return self.__area
 
         def get_search_accuracy(self) -> int:
@@ -125,7 +142,7 @@ class Quadtree:
                 if node.in_section(added_object):
                     # Если в нод нет других объектов.
                     if node.is_empty():
-                        # Если в ноде нет ни объекто, ни других нод, просто
+                        # Если в ноде нет ни объектов, ни других нод, просто
                         # добавляем объект в текущую ноду. Эта нода становится
                         # листом.
                         if len(node.get_nodes()) == 0:

@@ -1,3 +1,5 @@
+"""Модуль абстрактного класса усилений"""
+
 import pygame
 import random
 from abc import (
@@ -67,7 +69,6 @@ class Powerup(Collideable, pygame.sprite.Sprite, ABC):
             settings.HEIGHT - self._size // 2,
         ) if pos_y is None else pos_y
 
-
     @abstractmethod
     def influence(self, player: Player) -> None:
         pass
@@ -86,24 +87,53 @@ class Powerup(Collideable, pygame.sprite.Sprite, ABC):
         self._activate_time = pygame.time.get_ticks()
 
     def get_activate_time(self) -> Optional[int]:
+        """
+        Геттер времени активации.
+
+        :return: Целое число, время активации усиления.
+        """
+
         return self._activate_time
 
     @classmethod
     def get_lifetime(cls) -> int:
+        """
+        Геттер времени жизни усиления.
+
+        :return: Целое число, время жизни усиления.
+        """
+
         return cls._lifetime
 
     @classmethod
     def get_time_action(cls) -> int:
+        """
+        Геттер времени действия усиления.
+
+        :return: Целое число, время жизни усиления.
+        """
+
         return cls._time_action
 
     @property
     def status(self) -> Status:
+        """
+        Геттер статуса усиления.
+
+        :return: Объект перечисления статуса усиления.
+        """
+
         return self._status
 
     @status.setter
     def status(self, new_status: Status) -> None:
-        self._status = new_status
+        """
+        Сеттер статуса усиления.
 
+        :param new_status: Объект перечисления статуса училения.
+        """
+
+        self._status = new_status
 
     def update(self) -> None:
         """Метод обновления состояния усиления"""

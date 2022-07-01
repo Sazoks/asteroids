@@ -1,5 +1,6 @@
+"""Модуль генератора астероидов"""
+
 import pygame
-import math
 import random
 from typing import (
     List,
@@ -55,7 +56,11 @@ class AsteroidsGenerator(ManagingLevels):
         self.__asteroid_types = asteroid_types
 
     def generate(self) -> Optional[Asteroid]:
-        """Генерация астероидов"""
+        """
+        Генерация астероидов.
+
+        :return: Объект астероида либо None.
+        """
 
         now = pygame.time.get_ticks()
         if now - self.__last_asteroid_spawn >= self.__current_frequency:
@@ -68,6 +73,12 @@ class AsteroidsGenerator(ManagingLevels):
             return new_asteroid
 
     def get_current_level(self) -> int:
+        """
+        Геттер текущего уровня.
+
+        :return: Целое число, текущий уровень.
+        """
+
         return self.__current_level
 
     def level_up(self) -> None:

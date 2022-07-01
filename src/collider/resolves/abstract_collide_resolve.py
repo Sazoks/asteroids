@@ -10,7 +10,7 @@ class AbstractCollideResolve(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_object_types() -> Tuple[str, str]:
+    def get_object_types() -> Tuple[object, object]:
         pass
 
     @abstractmethod

@@ -1,3 +1,5 @@
+"""Модуль коллайдера"""
+
 from .collideable import Collideable
 from .abstract_collide_resolve_factory import AbstractCollideResolveFactory
 
@@ -19,7 +21,7 @@ class CollideResolver:
         Метод разрешения коллизий двух объектов.
 
         Нужное решение генерируется в фабрике на основе
-        имен классов объектов.
+        классов объектов.
 
         :param obj_1: Объект 1.
         :param obj_2: Объект 2.

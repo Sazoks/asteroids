@@ -1,3 +1,5 @@
+"""Модуль усиления скорости игрока"""
+
 import pygame
 from typing import Optional
 
@@ -27,7 +29,11 @@ class SpeedPowerup(Powerup):
         self.__prev_value: Optional[int] = None
 
     def influence(self, player: Player) -> None:
-        """Воздействие усиления на игрока"""
+        """
+        Воздействие усиления на игрока.
+
+        :param player: Объект игрока, на которого оказывается усиление.
+        """
 
         # Если воздействия прежде не было, сохраняем исходное значение и
         # меняем статус усиления.
@@ -38,7 +44,11 @@ class SpeedPowerup(Powerup):
             player.speed = self.__speed
 
     def rollback_param(self, player: Player) -> None:
-        """Возврат предыдущего значения параметра у игрока"""
+        """
+        Возврат предыдущего значения параметра у игрока.
+
+        :param player: Объект игрока, чьи параметры нужно вернуть.
+        """
 
         if self.__prev_value is not None:
             player.speed = self.__prev_value

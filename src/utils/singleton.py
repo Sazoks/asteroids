@@ -1,3 +1,6 @@
+"""Модуль с мета-классом Singleton'a"""
+
+
 class Singleton(type):
     """Мета-класс, реализующий паттерн Singleton"""
 

@@ -1,5 +1,6 @@
 import pygame
 import random
+from typing import Tuple
 
 import settings
 from player import Player
@@ -24,13 +25,13 @@ class AsteroidPlayerCollideResolve(AbstractCollideResolve):
         self.__asteroid = asteroid
 
     @staticmethod
-    def get_object_types() -> tuple:
+    def get_object_types() -> Tuple[object, object]:
         """
-        Геттер для получения имен классов объектов, столкновения
+        Геттер для получения классов объектов, столкновения
         которых может решать этот резолвер.
 
         :return:
-            Кортеж имен классов объектов, которые могут сталкиваться.
+            Кортеж классов объектов, которые могут сталкиваться.
         """
 
         return Player, Asteroid

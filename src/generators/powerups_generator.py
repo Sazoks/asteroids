@@ -1,3 +1,5 @@
+"""Модуль генератора усилений"""
+
 import pygame
 import random
 from typing import Optional
@@ -47,7 +49,11 @@ class PowerupsGenerator(ManagingLevels):
         self.__frequency_delta = start_frequency // max_level
 
     def generate(self) -> Optional[Powerup]:
-        """Генерация усиления"""
+        """
+        Генерация усиления.
+
+        :return: Объект усиления либо None.
+        """
 
         now = pygame.time.get_ticks()
         if now - self.__last_asteroid_spawn >= self.__current_frequency:
@@ -57,6 +63,12 @@ class PowerupsGenerator(ManagingLevels):
             return random_powerup
 
     def get_current_level(self) -> int:
+        """
+        Геттер текущего уровня.
+
+        :return: Целое число, текущий уровень.
+        """
+
         return self.__current_level
 
     def level_up(self) -> None:

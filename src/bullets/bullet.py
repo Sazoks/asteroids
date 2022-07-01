@@ -1,10 +1,13 @@
+"""Модуль снаряд игрока"""
+
 import pygame
 import math
 
 import settings
+from collider.collideable import Collideable
 
 
-class Bullet(pygame.sprite.Sprite):
+class Bullet(Collideable, pygame.sprite.Sprite):
     """Класс снаряда игркоа"""
 
     def __init__(
@@ -47,7 +50,14 @@ class Bullet(pygame.sprite.Sprite):
         self.rotate(math.degrees(angle))
 
     def update(self):
-        # убить, если он заходит за верхнюю часть экрана
+        """
+        Обновление состояния снаряда.
+
+        Вызывается у через группу спрайтов у всех снарядов.
+        """
+
+        # При выходе за границы игрового поля уничтожить спрайт.
+        # Он удаляется из всех групп.
         if self.rect.right < 0 or self.rect.left > settings.WIDTH \
                 or self.rect.bottom < 0 or self.rect.top > settings.HEIGHT:
             self.kill()
@@ -57,7 +67,14 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centery -= math.cos(self.angle) * self.__speed
 
     def rotate(self, new_rot: float) -> None:
+        """
+        Установка нового угла для снаряда.
+
+        :param new_rot: Новый угол в радианах.
+        """
+
         self.rot = new_rot
+        # Получаем новый повернутый спрайт.
         new_image = pygame.transform.rotate(self.image_orig, self.rot)
         old_center = self.rect.center
         self.image = new_image
@@ -65,13 +82,37 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=old_center)
 
     def get_damage(self) -> int:
+        """
+        Геттер урона снаряда.
+
+        :return: Целое число, урон снаряда.
+        """
+
         return self.__damage
 
     def get_speed(self) -> float:
+        """
+        Геттер скорости.
+
+        :return: Вещественное число, скорость снаряда.
+        """
+
         return self.__speed
 
     def get_height(self) -> int:
+        """
+        Геттер высоты снаряда.
+
+        :return: Целое число, высота снаряда в px.
+        """
+
         return self.__height
 
     def get_width(self) -> int:
+        """
+        Геттер ширины снаряда.
+
+        :return: Целое число, ширина снаряда в px.
+        """
+
         return self.__width

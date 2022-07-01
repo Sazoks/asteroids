@@ -1,3 +1,5 @@
+"""Модуль усилений здоровья игрока"""
+
 import pygame
 from typing import Optional
 

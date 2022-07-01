@@ -1,3 +1,5 @@
+"""Модуль анимации взрыва"""
+
 import pygame
 from typing import (
     Tuple,

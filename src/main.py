@@ -1,3 +1,10 @@
+"""
+Главный модуль программы.
+
+Содержит точку входа в программу.
+"""
+
+
 import pygame
 
 import settings
@@ -13,7 +20,11 @@ from generators.powerups_generator import PowerupsGenerator
 
 
 def main():
-    """Главная функция программы"""
+    """
+    Главная функция программы.
+
+    Является точкой входа в программу.
+    """
 
     # Инициализируем единственный экземпляр класса игровых объектов.
     # Этот класс служит глобальной точкой получения общих игровых объектов
@@ -82,7 +93,7 @@ def main():
         skin=settings.player_skin,
         bullet_skin=settings.bullet_skin,
         health=200, speed=2.7, damage=22,
-        radius=25, shoot_delay=420, score=5231,
+        radius=25, shoot_delay=420, score=0,
     )
     game_objects.players_group.add(player)
     # Регистрируем игрока в менджере активных усилений.
